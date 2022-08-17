@@ -2,6 +2,7 @@ import { Controls } from "./Controls";
 import { Sounds } from "./Sounds";
 import { Player } from "./entities/Player";
 import { Playfield } from "./entities/Playfield";
+import { Level1 } from "./levels/Level1";
 
 export class Game {
     private timer: any;
@@ -24,7 +25,8 @@ export class Game {
     }
 
     public async start() {
-        await this.playfield.init();
+        await this.playfield.init(new Level1());
+        
         this.controls.connect(this);
         this.sounds.backgroundMusic();
         await this.loop();

@@ -3,13 +3,15 @@ import { Player } from "./game/entities/Player";
 
 document.getElementById("btn").addEventListener("click", () => {
     
-    var canvas = document.createElement("CANVAS") as HTMLCanvasElement;
+    const canvas = document.createElement("CANVAS") as HTMLCanvasElement;
     canvas.setAttribute("id", "game");
     canvas.setAttribute("width", "640");
     canvas.setAttribute("height", "480");
-    document.body.appendChild(canvas);
     var ctx = canvas.getContext("2d");
-        
+    
+    const container = document.getElementById("container") as HTMLDivElement;
+    container.appendChild(canvas);    
+
     const player = new Player();
     const game = new Game();
     

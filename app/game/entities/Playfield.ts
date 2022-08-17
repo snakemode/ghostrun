@@ -1,6 +1,7 @@
 import { Enemy } from "./Enemy";
 import { Game } from "../Game";
 import { ITickable } from "../roles/ITickable";
+import { Level } from "./Level";
 
 export class Playfield implements ITickable {
     public height = 480;
@@ -17,40 +18,31 @@ export class Playfield implements ITickable {
         this.enemies = [];
     }
 
-    public async init() {
+    public async init(level: Level) {
         this.map = new Image();
-        this.map.src = "level.png";
+        this.map.src = level.foregroundUrl;
         
         const image = await new Promise<HTMLImageElement>((resolve, reject) => {
             var collisionMapImage = new Image();
             collisionMapImage.onload = (loadEvent: any) => {
                 resolve(loadEvent.path[0]);
             };
-            collisionMapImage.src = "level-map.png";
+            collisionMapImage.src = level.collisionUrl;
         });
 
         var hiddenCanvas = document.createElement("CANVAS") as HTMLCanvasElement;
         hiddenCanvas.setAttribute("width", image.width + "px");
         hiddenCanvas.setAttribute("height", image.height + "px");
-        hiddenCanvas.style.border = "1px solid black";
 
         this.collisionMap = hiddenCanvas.getContext("2d");
         this.collisionMap.drawImage(image, 0, 0);
+
+        level.onStart(this);
     }
 
     public async tick(gameState: Game) {
-        if (!this.map) {
-            await this.init();
-            this.enemies.push(new Enemy(500, 100));
-            this.enemies.push(new Enemy(2000, 100));
-            this.enemies.push(new Enemy(3700, 100));
-            this.enemies.push(new Enemy(4000, 100));
-            this.enemies.push(new Enemy(5600, 100));
-            this.enemies.push(new Enemy(6500, 100));
-            this.enemies.push(new Enemy(7600, 100));
-        }
         this.tickCount++;
-        this.distanceTravelled += gameState.player.speed;
+        this.distanceTravelled += gameState.player.velocityX;
         this.activateNearbyEnemies(gameState);
     }
 
@@ -72,9 +64,9 @@ export class Playfield implements ITickable {
         return 0;
     }
 
-    public isSolidSurface(x, y) { return this.getPixelType(x, y) == "#"; }
-    public isPit(x, y) { return this.getPixelType(x, y) == "pit"; }
-    public isGoal(x, y) { return this.getPixelType(x, y) == "exit"; }
+    public isSolidSurface(x: number, y: number) { return this.getPixelType(x, y) == "#"; }
+    public isPit(x: number, y: number) { return this.getPixelType(x, y) == "pit"; }
+    public isGoal(x: number, y: number) { return this.getPixelType(x, y) == "exit"; }
 
     public getPixelType(x: number, y: number) {
         if (!this.collisionMap) { 
@@ -85,8 +77,6 @@ export class Playfield implements ITickable {
         var rawData = mapData.data;
         var mask = rawData[0] + " " + rawData[1] + " " + rawData[2] + " " + rawData[3];
         
-        //console.log("getPixelType", arguments, mask);
-
         if (mask == "255 0 0 255")
             return "pit";
 
@@ -106,6 +96,8 @@ export class Playfield implements ITickable {
 
     public draw(gameState: Game) {
         var drawAtX = this.distanceTravelled * -1;
+        //var drawAtX = gameState.player.x * -1;
+
         drawAtX = drawAtX > 0 ? 0 : drawAtX;
         drawAtX = this.atLevelEnd() ? this.levelEndOffset() * -1 : drawAtX;
 

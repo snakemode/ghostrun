@@ -7,35 +7,30 @@ export class Player extends Character {
         super(160, 390, 25, 25, new Sprite("graphics/cat", 5), new Sprite("graphics/cat.backwards", 5));
     }
 
-    public async tick(gameState: Game) {
+    public async tickBehaviour(gameState: Game) {
         if (gameState.playfield.isGoal(this.leadingEdge(), this.y)) {
             gameState.stop();
             return;
         }
 
-        if (!this.isAlive) {
-            return;
-        }
-
         this.processControls(gameState);
-        super.tick(gameState);
     }
 
     private processControls(game: Game) {
         if (game.controls.right) {
-            this.speed = 5;
+            this.velocityX = 5;
         }
 
         if (game.controls.left) {
-            this.speed = -5;
+            this.velocityX = -5;
         }
 
         if (!game.controls.left && !game.controls.right) {
-            this.speed = 0;
+            this.velocityX = 0;
         }
 
         if (game.controls.up && this.standingOnAPlatform(game)) {
-            this.downwardForce = -8;
+            this.velocityY = -8;
             game.sounds.jump();
         }
     }
