@@ -1,9 +1,24 @@
-console.log("Oh hai! 🖤");
+import { Game } from "./game/Game";
+import { Player } from "./game/entities/Player";
 
-const result = await fetch("/api/hello")
-const data = await result.json()
-console.log(data)
+document.getElementById("btn").addEventListener("click", () => {
+    
+    var canvas = document.createElement("CANVAS") as HTMLCanvasElement;
+    canvas.setAttribute("id", "game");
+    canvas.setAttribute("width", "640");
+    canvas.setAttribute("height", "480");
+    document.body.appendChild(canvas);
+    var ctx = canvas.getContext("2d");
 
-document.getElementById("response").innerText = JSON.stringify(data);
+        
+    const game = new Game();
+    const player = new Player();
+
+    game.addPlayer(player);
+    console.log(player);
+
+    game.setRenderContext(ctx);
+    game.start();
+});
 
 export { };
