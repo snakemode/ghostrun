@@ -7,7 +7,7 @@ export class Enemy extends Character {
         super(x, y, 25, 25, new Sprite("graphics/slime", 4), new Sprite("graphics/slime", 4));
     }
 
-    public tick(gameState: Game) {
+    public async tick(gameState: Game) {
         if (!this.isAlive) {
             return;
         }

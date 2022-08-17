@@ -17,9 +17,36 @@ export class Level implements ITickable {
         this.enemies = [];
     }
 
-    tick(gameState: Game) {
+    public async init() {
+        this.map = new Image();
+        this.map.src = "level.png";
+
+        await new Promise<void>((resolve, reject) => {
+
+            var collisionMapImage = new Image();
+
+            collisionMapImage.onload = (loadEvent: any) => {
+                const image = loadEvent.path[0];
+                
+
+                var hiddenCanvas = document.createElement("CANVAS") as HTMLCanvasElement;
+                hiddenCanvas.setAttribute("width", this.width + "px");
+                hiddenCanvas.setAttribute("height", this.height + "px");
+                
+                this.collisionMap = hiddenCanvas.getContext("2d");
+                this.collisionMap.drawImage(hiddenCanvas, 0, 0);
+
+                console.log("collision map loaded", loadEvent);
+                resolve();
+            };
+
+            collisionMapImage.src = "level-map.png";
+        });
+    }
+
+    public async tick(gameState: Game) {
         if (!this.map) {
-            this.loadLevel(gameState);
+            await this.init();
             this.enemies.push(new Enemy(500, 100));
             this.enemies.push(new Enemy(2000, 100));
             this.enemies.push(new Enemy(3700, 100));
@@ -33,7 +60,7 @@ export class Level implements ITickable {
         this.activateNearbyEnemies(gameState);
     }
 
-    activateNearbyEnemies(gameState: Game) {
+    public activateNearbyEnemies(gameState: Game) {
         for (var i = 0; i < this.enemies.length; i++) {
             var distanceFromPlayer = Math.abs(gameState.player.x - this.enemies[i].x);
             if (distanceFromPlayer <= gameState.world.width * 2) {
@@ -42,25 +69,7 @@ export class Level implements ITickable {
         }
     }
 
-    loadLevel(gameState: Game) {
-        this.map = new Image();
-        this.map.src = "level.png";
-
-        var collisionMapImage = new Image();
-        collisionMapImage.onload = (loadEvent) => {
-            var hiddenCanvas = document.createElement("CANVAS") as HTMLCanvasElement;
-            hiddenCanvas.setAttribute("width", this.width + "");
-            hiddenCanvas.setAttribute("height", this.height + "");
-            
-            const context = hiddenCanvas.getContext("2d");
-            context.drawImage(hiddenCanvas, 0, 0);
-            this.collisionMap = context;
-        };
-
-        collisionMapImage.src = "level-map.png";
-    }
-
-    getFloorBelowY(x, y) {
+    public getFloorBelowY(x, y) {
         for (var tempY = y; tempY <= this.height; tempY++) {
             if (this.isSolidSurface(x, tempY)) {
                 return tempY;
@@ -69,11 +78,11 @@ export class Level implements ITickable {
         return 0;
     }
 
-    isSolidSurface(x, y) { return this.getPixelType(x, y) == "#"; }
-    isPit(x, y) { return this.getPixelType(x, y) == "pit"; }
-    isGoal(x, y) { return this.getPixelType(x, y) == "exit"; }
+    public isSolidSurface(x, y) { return this.getPixelType(x, y) == "#"; }
+    public isPit(x, y) { return this.getPixelType(x, y) == "pit"; }
+    public isGoal(x, y) { return this.getPixelType(x, y) == "exit"; }
 
-    getPixelType(x: number, y: number) {
+    public getPixelType(x: number, y: number) {
         if (!this.collisionMap) { 
             return "."; 
         }
@@ -81,6 +90,8 @@ export class Level implements ITickable {
         const mapData = this.collisionMap.getImageData(x, y, 1, 1);
         var rawData = mapData.data;
         var mask = rawData[0] + " " + rawData[1] + " " + rawData[2] + " " + rawData[3];
+        
+        //console.log("getPixelType", arguments, mask);
 
         if (mask == "255 0 0 255")
             return "pit";
@@ -95,11 +106,11 @@ export class Level implements ITickable {
             return "#";
     }
 
-    levelEndOffset() { return this.map.width - this.width; }
+    public levelEndOffset() { return this.map.width - this.width; }
 
-    atLevelEnd() { return this.distanceTravelled >= this.levelEndOffset(); }
+    public atLevelEnd() { return this.distanceTravelled >= this.levelEndOffset(); }
 
-    draw(gameState: Game) {
+    public draw(gameState: Game) {
         var drawAtX = this.distanceTravelled * -1;
         drawAtX = drawAtX > 0 ? 0 : drawAtX;
         drawAtX = this.atLevelEnd() ? this.levelEndOffset() * -1 : drawAtX;

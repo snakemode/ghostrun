@@ -27,7 +27,7 @@ export class Character implements ITickable {
         this.isAlive = true;
     }
 
-    public tick(gameState: Game) {
+    public async tick(gameState: Game) {
         if (!this.isAlive) {
             return;
         }

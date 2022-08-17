@@ -9,14 +9,11 @@ document.getElementById("btn").addEventListener("click", () => {
     canvas.setAttribute("height", "480");
     document.body.appendChild(canvas);
     var ctx = canvas.getContext("2d");
-
         
-    const game = new Game();
     const player = new Player();
-
+    const game = new Game();
+    
     game.addPlayer(player);
-    console.log(player);
-
     game.setRenderContext(ctx);
     game.start();
 });

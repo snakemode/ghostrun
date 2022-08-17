@@ -7,7 +7,7 @@ export class Player extends Character {
         super(160, 390, 25, 25, new Sprite("graphics/cat", 5), new Sprite("graphics/cat.backwards", 5));
     }
 
-    public tick(gameState: Game) {
+    public async tick(gameState: Game) {
         if (gameState.world.isGoal(this.leadingEdge(), this.y)) {
             gameState.stop();
             return;

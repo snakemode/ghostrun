@@ -23,10 +23,11 @@ export class Game {
         this.player = null;
     }
 
-    public start() {
+    public async start() {
+        await this.world.init();
         this.controls.connect(this);
         this.sounds.backgroundMusic();
-        this.loop();
+        await this.loop();
     }
 
     public stop() {
@@ -42,21 +43,21 @@ export class Game {
         this.player = player;
     }
 
-    public loop() {
+    public async loop() {
         if (this.finished) {
             return;
         }
 
-        this.world.tick(this);
-        this.player.tick(this);
+        await this.world.tick(this);
+        await this.player.tick(this);
 
         if (this.ctx) {
             this.world.draw(this);
             this.player.draw(this);
         }
 
-        this.timer = window.setTimeout(() => {
-            this.loop();
+        this.timer = window.setTimeout(async () => {
+            await this.loop();
         }, 1000 / 60);
     }
 }
