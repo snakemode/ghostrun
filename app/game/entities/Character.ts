@@ -32,7 +32,7 @@ export class Character implements ITickable {
             return;
         }
 
-        if (gameState.world.isPit(this.leadingEdge(), this.bottom())) {
+        if (gameState.playfield.isPit(this.leadingEdge(), this.bottom())) {
             this.die();
         }
 
@@ -51,14 +51,14 @@ export class Character implements ITickable {
             this.jumpHeight += (this.downwardForce * -1);
 
             if (this.jumpHeight >= this.height * 6) {
-                this.downwardForce = gameState.world.gravity;
+                this.downwardForce = gameState.playfield.gravity;
                 this.jumpHeight = 0;
             }
         } else {
             if (this.standingOnAPlatform(gameState)) {
                 this.downwardForce = 0;
             } else {
-                this.downwardForce = gameState.world.gravity;
+                this.downwardForce = gameState.playfield.gravity;
             }
         }
     }
@@ -68,17 +68,17 @@ export class Character implements ITickable {
         var nextY = this.y + this.downwardForce;
         var nextLeadingX = this.leadingEdge() + this.speed;
 
-        var walkingIntoSurface = gameState.world.isSolidSurface(nextLeadingX, this.y);
+        var walkingIntoSurface = gameState.playfield.isSolidSurface(nextLeadingX, this.y);
         if (this.isMoving() && walkingIntoSurface) {
             nextX = this.x;
             this.speed = 0;
         }
 
-        var topLeftIsSolid = gameState.world.isSolidSurface(this.leadingEdge(), this.y);
-        var topRightIsSolid = gameState.world.isSolidSurface(this.trailingEdge(), this.y);
+        var topLeftIsSolid = gameState.playfield.isSolidSurface(this.leadingEdge(), this.y);
+        var topRightIsSolid = gameState.playfield.isSolidSurface(this.trailingEdge(), this.y);
 
         if ((topLeftIsSolid || topRightIsSolid) && this.isJumping()) {
-            this.downwardForce = gameState.world.gravity;
+            this.downwardForce = gameState.playfield.gravity;
             this.jumpHeight = 0;
         }
 
@@ -93,8 +93,8 @@ export class Character implements ITickable {
     leadingEdge() { return this.speed < 0 ? this.x : this.x + this.width; }
     trailingEdge() { return this.speed < 0 ? this.x + this.width : this.x; }
     standingOnAPlatform(gameState: Game) {
-        return gameState.world.isSolidSurface(this.leadingEdge(), this.bottom() + 1)
-            || gameState.world.isSolidSurface(this.trailingEdge(), this.bottom() + 1);
+        return gameState.playfield.isSolidSurface(this.leadingEdge(), this.bottom() + 1)
+            || gameState.playfield.isSolidSurface(this.trailingEdge(), this.bottom() + 1);
     }
 
     collidesWith(other) {
@@ -108,11 +108,11 @@ export class Character implements ITickable {
     draw(gameState: Game) {
         if (!this.isAlive || !this.runningSprite) { return; }
 
-        var screenX = this.x - gameState.world.distanceTravelled;
+        var screenX = this.x - gameState.playfield.distanceTravelled;
         screenX = screenX > this.x ? this.x : screenX;
 
-        if (gameState.world.atLevelEnd()) {
-            screenX = (gameState.world.width - (gameState.world.width - gameState.world.distanceTravelled - (this.x - gameState.world.distanceTravelled)));
+        if (gameState.playfield.atLevelEnd()) {
+            screenX = (gameState.playfield.width - (gameState.playfield.width - gameState.playfield.distanceTravelled - (this.x - gameState.playfield.distanceTravelled)));
         }
 
         var sprite = this.speed < 0 ? this.runningSpriteReversed : this.runningSprite;
@@ -120,7 +120,7 @@ export class Character implements ITickable {
         if (this.isJumping() || this.isFalling()) {
             sprite.drawFrame(4, screenX, this.y, this.height, this.width, gameState.ctx);
         } else if (this.isMoving()) {
-            sprite.draw(gameState.world.tickCount, screenX, this.y, this.height, this.width, gameState.ctx);
+            sprite.draw(gameState.playfield.tickCount, screenX, this.y, this.height, this.width, gameState.ctx);
         } else {
             sprite.drawFrame(1, screenX, this.y, this.height, this.width, gameState.ctx);
         }

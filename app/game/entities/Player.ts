@@ -8,7 +8,7 @@ export class Player extends Character {
     }
 
     public async tick(gameState: Game) {
-        if (gameState.world.isGoal(this.leadingEdge(), this.y)) {
+        if (gameState.playfield.isGoal(this.leadingEdge(), this.y)) {
             gameState.stop();
             return;
         }

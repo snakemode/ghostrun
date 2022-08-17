@@ -2,16 +2,16 @@ import { Enemy } from "./Enemy";
 import { Game } from "../Game";
 import { ITickable } from "../roles/ITickable";
 
-export class Level implements ITickable {
-    height = 480;
-    width = 640;
-    gravity = 10;
-    distanceTravelled = 0;
-    tickCount = 0;
-    enemies: Enemy[];
-
-    map: HTMLImageElement;
-    collisionMap: any;
+export class Playfield implements ITickable {
+    public height = 480;
+    public width = 640;
+    public gravity = 10;
+    public distanceTravelled = 0;
+    public tickCount = 0;
+    public enemies: Enemy[];
+ 
+    public map: HTMLImageElement;
+    public collisionMap: CanvasRenderingContext2D;
 
     constructor() {
         this.enemies = [];
@@ -20,28 +20,22 @@ export class Level implements ITickable {
     public async init() {
         this.map = new Image();
         this.map.src = "level.png";
-
-        await new Promise<void>((resolve, reject) => {
-
+        
+        const image = await new Promise<HTMLImageElement>((resolve, reject) => {
             var collisionMapImage = new Image();
-
             collisionMapImage.onload = (loadEvent: any) => {
-                const image = loadEvent.path[0];
-                
-
-                var hiddenCanvas = document.createElement("CANVAS") as HTMLCanvasElement;
-                hiddenCanvas.setAttribute("width", this.width + "px");
-                hiddenCanvas.setAttribute("height", this.height + "px");
-                
-                this.collisionMap = hiddenCanvas.getContext("2d");
-                this.collisionMap.drawImage(hiddenCanvas, 0, 0);
-
-                console.log("collision map loaded", loadEvent);
-                resolve();
+                resolve(loadEvent.path[0]);
             };
-
             collisionMapImage.src = "level-map.png";
         });
+
+        var hiddenCanvas = document.createElement("CANVAS") as HTMLCanvasElement;
+        hiddenCanvas.setAttribute("width", image.width + "px");
+        hiddenCanvas.setAttribute("height", image.height + "px");
+        hiddenCanvas.style.border = "1px solid black";
+
+        this.collisionMap = hiddenCanvas.getContext("2d");
+        this.collisionMap.drawImage(image, 0, 0);
     }
 
     public async tick(gameState: Game) {
@@ -63,7 +57,7 @@ export class Level implements ITickable {
     public activateNearbyEnemies(gameState: Game) {
         for (var i = 0; i < this.enemies.length; i++) {
             var distanceFromPlayer = Math.abs(gameState.player.x - this.enemies[i].x);
-            if (distanceFromPlayer <= gameState.world.width * 2) {
+            if (distanceFromPlayer <= gameState.playfield.width * 2) {
                 this.enemies[i].tick(gameState);
             }
         }

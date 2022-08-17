@@ -1,7 +1,7 @@
 import { Controls } from "./Controls";
 import { Sounds } from "./Sounds";
 import { Player } from "./entities/Player";
-import { Level } from "./entities/Level";
+import { Playfield } from "./entities/Playfield";
 
 export class Game {
     private timer: any;
@@ -9,7 +9,7 @@ export class Game {
 
     public controls: Controls;
     public sounds: Sounds;
-    public world: Level;
+    public playfield: Playfield;
     public player: Player;
     
     public ctx: CanvasRenderingContext2D;
@@ -19,12 +19,12 @@ export class Game {
         this.controls = new Controls();
         this.sounds = new Sounds(false);
 
-        this.world = new Level();
+        this.playfield = new Playfield();
         this.player = null;
     }
 
     public async start() {
-        await this.world.init();
+        await this.playfield.init();
         this.controls.connect(this);
         this.sounds.backgroundMusic();
         await this.loop();
@@ -48,11 +48,11 @@ export class Game {
             return;
         }
 
-        await this.world.tick(this);
+        await this.playfield.tick(this);
         await this.player.tick(this);
 
         if (this.ctx) {
-            this.world.draw(this);
+            this.playfield.draw(this);
             this.player.draw(this);
         }
 
