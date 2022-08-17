@@ -6,7 +6,6 @@ import { PhysicsObject } from "./PhysicsObject";
 
 export class Character extends PhysicsObject implements ITickable {
 
-    jumpHeight: number;
     runningSprite: any;
     runningSpriteReversed: any;
 
@@ -16,7 +15,6 @@ export class Character extends PhysicsObject implements ITickable {
         this.addBehaviour(Movable.name, new Movable(this));
         this.addBehaviour(Killable.name, new Killable(this));
 
-        this.jumpHeight = 0;
         this.runningSprite = runningSprite;
         this.runningSpriteReversed = reverseSprite;
     }

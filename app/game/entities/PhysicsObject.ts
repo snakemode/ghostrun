@@ -5,12 +5,14 @@ import { Entity } from "./Entity";
 export class PhysicsObject extends Entity {
     public velocityX: number;
     public velocityY: number;
+    public jumpHeight: number;
 
     constructor(x: number, y: number, width: number, height: number) {
         super(x, y, width, height);
 
         this.velocityX = 0;
         this.velocityY = 0;
+        this.jumpHeight = 0;
     }
 
     public async beforeTick(gameState: Game): Promise<void> {
@@ -20,11 +22,20 @@ export class PhysicsObject extends Entity {
     public async tickBehaviour(gameState: Game) {
     }
 
-    private async applyGravity(gameState: Game) {
-        if (this.standingOnAPlatform(gameState)) {
-            this.velocityY = 0;
+    private async applyGravity(gameState: Game) {            
+        if (this.isJumping()) {
+            this.jumpHeight += (this.velocityY*-1);
+
+            if (this.jumpHeight >= this.height * 6) {
+                this.velocityY = gameState.playfield.gravity;
+                this.jumpHeight = 0;
+            }
         } else {
-            this.velocityY = gameState.playfield.gravity;
+            if (this.standingOnAPlatform(gameState)) {
+                this.velocityY = 0;
+            } else {
+                this.velocityY = gameState.playfield.gravity;
+            }
         }
     }
 
