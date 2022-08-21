@@ -8,16 +8,21 @@ export class Playfield implements ITickable {
     public width = 640;
     public distanceTravelled = 0;
     public tickCount = 0;
-    public enemies: Enemy[];
  
     public map: HTMLImageElement;
+    private collisionMapImage: HTMLImageElement;
     public collisionMap: CanvasRenderingContext2D;
 
-    constructor() {
-        this.enemies = [];
+    private level: Level;
+    private parent: Game;
+
+    constructor(gameState: Game) {
+        this.parent = gameState;
     }
 
     public async init(level: Level) {
+        this.level = level;
+
         this.map = new Image();
         this.map.src = level.foregroundUrl;
         
@@ -27,6 +32,7 @@ export class Playfield implements ITickable {
                 resolve(loadEvent.path[0]);
             };
             collisionMapImage.src = level.collisionUrl;
+            this.collisionMapImage = collisionMapImage;
         });
 
         var hiddenCanvas = document.createElement("CANVAS") as HTMLCanvasElement;
@@ -42,16 +48,7 @@ export class Playfield implements ITickable {
     public async tick(gameState: Game) {
         this.tickCount++;
         this.distanceTravelled += gameState.player.velocityX;
-        this.activateNearbyEnemies(gameState);
-    }
-
-    public activateNearbyEnemies(gameState: Game) {
-        for (var i = 0; i < this.enemies.length; i++) {
-            var distanceFromPlayer = Math.abs(gameState.player.x - this.enemies[i].x);
-            if (distanceFromPlayer <= gameState.playfield.width * 2) {
-                this.enemies[i].tick(gameState);
-            }
-        }
+        this.level.onTick(gameState);
     }
 
     public getFloorBelowY(x, y) {
@@ -98,15 +95,16 @@ export class Playfield implements ITickable {
 
     public draw(gameState: Game) {
         var drawAtX = this.distanceTravelled * -1;
-        //var drawAtX = gameState.player.x * -1;
 
         drawAtX = drawAtX > 0 ? 0 : drawAtX;
         drawAtX = this.atLevelEnd() ? this.levelEndOffset() * -1 : drawAtX;
 
-        gameState.ctx.drawImage(this.map, drawAtX, 0);
+        const visual = this.parent.debug ? this.collisionMapImage : this.map;
 
-        for (var i = 0; i < this.enemies.length; i++) {
-            this.enemies[i].draw(gameState);
+        gameState.ctx.drawImage(visual, drawAtX, 0);
+
+        for (var i = 0; i < this.level.enemies.length; i++) {
+            this.level.enemies[i].draw(gameState);
         }
     }
 }

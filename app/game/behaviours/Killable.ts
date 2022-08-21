@@ -17,7 +17,7 @@ export class Killable implements IBehaviour {
             return false;
         }
 
-        if (gameState.playfield.isPit(this.entity.leadingEdge(), this.entity.bottom())) {
+        if (gameState.playfield.isPit(this.entity.leadingEdge, this.entity.bottom)) {
             this.kill();
             return false; // short circuit the rest of the behaviours
         }

@@ -9,6 +9,8 @@ export class Enemy extends Character {
     }
 
     public async tickBehaviour(gameState: Game) {
+        super.tickBehaviour(gameState);
+        
         this.velocityX = 2;
 
         if (gameState.player.x < this.x) {

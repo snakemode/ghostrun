@@ -14,17 +14,26 @@ export class Game {
     public player: Player;
     
     public ctx: CanvasRenderingContext2D;
+    public debug: boolean;
 
     constructor() {
+        this.debug = false;
         this.finished = false;
         this.controls = new Controls();
         this.sounds = new Sounds(false);
 
-        this.playfield = new Playfield();
+        this.playfield = new Playfield(this);
         this.player = null;
     }
 
     public async start() {
+        if (this.timer) {
+            this.finished = false;
+            window.clearTimeout(this.timer);
+        }
+
+        this.player = new Player();
+
         await this.playfield.init(new Level1());
         
         this.controls.connect(this);
@@ -39,10 +48,6 @@ export class Game {
 
     public setRenderContext(ctx: CanvasRenderingContext2D) {
         this.ctx = ctx;
-    }
-
-    public addPlayer(player: Player) {
-        this.player = player;
     }
 
     public async loop() {

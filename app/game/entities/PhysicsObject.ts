@@ -1,22 +1,21 @@
 import { Game } from "../Game";
 import { Entity } from "./Entity";
 
-
 export class PhysicsObject extends Entity {
     public velocityX: number;
     public velocityY: number;
-    public jumpHeight: number;
 
-    public gravity: number;
-
+    public gravityDistancePerTick: number;
+    public weight: number;
+    
     constructor(x: number, y: number, width: number, height: number) {
         super(x, y, width, height);
 
         this.velocityX = 0;
         this.velocityY = 0;
-        this.jumpHeight = 0;
+        this.weight = 15;
 
-        this.gravity = 10;
+        this.gravityDistancePerTick = 8.5;
     }
 
     public async beforeTick(gameState: Game): Promise<void> {
@@ -24,22 +23,23 @@ export class PhysicsObject extends Entity {
     }
 
     public async tickBehaviour(gameState: Game) {
+        this.applyMovement(gameState);
+    }
+
+    public async applyMovement(gameState: Game) {
         var nextX = this.x + this.velocityX;
         var nextY = this.y + this.velocityY;
-        var nextLeadingX = this.leadingEdge() + this.velocityX;
+        var nextLeadingX = this.leadingEdge + this.velocityX;
 
-        var walkingIntoSurface = gameState.playfield.isSolidSurface(nextLeadingX, this.y);
+        var walkingIntoSurface = gameState.playfield.isSolidSurface(nextLeadingX, this.top);
 
-        if (this.isMoving() && walkingIntoSurface) {
+        if (this.isMoving && walkingIntoSurface) {
             nextX = this.x;
             this.velocityX = 0;
         }
 
-        var topLeftIsSolid = gameState.playfield.isSolidSurface(this.leadingEdge(), this.y);
-        var topRightIsSolid = gameState.playfield.isSolidSurface(this.trailingEdge(), this.y);
-
-        if ((topLeftIsSolid || topRightIsSolid) && this.isJumping()) {
-            this.velocityY = gameState.player.gravity;
+        if (this.collidingUpwards(gameState)) {
+            this.velocityY = this.gravityDistancePerTick;
         }
 
         this.x = nextX;
@@ -47,18 +47,15 @@ export class PhysicsObject extends Entity {
     }
 
     private async applyGravity(gameState: Game) {            
-        if (this.isJumping()) {
-            this.jumpHeight += (this.velocityY*-1);
-
-            if (this.jumpHeight >= this.height * 6) {
-                this.velocityY = gameState.player.gravity;
-                this.jumpHeight = 0;
-            }
+        if (this.isJumping) {
+            const resistencePerTick = this.weight / 60;
+            this.velocityY += this.gravityDistancePerTick * resistencePerTick;
+ 
         } else {
             if (this.standingOnAPlatform(gameState)) {
                 this.velocityY = 0;
             } else {
-                this.velocityY = gameState.player.gravity;
+                this.velocityY = this.gravityDistancePerTick;
             }
         }
     }
@@ -71,15 +68,27 @@ export class PhysicsObject extends Entity {
         return false;
     }
 
-    public standingOnAPlatform(gameState: Game) {
-        return gameState.playfield.isSolidSurface(this.leadingEdge(), this.bottom() + 1)
-            || gameState.playfield.isSolidSurface(this.trailingEdge(), this.bottom() + 1);
+    public collidingUpwards(gameState: Game) {
+        for (let x = this.x; x < this.x + this.width; x++) {
+            if (gameState.playfield.isSolidSurface(x, this.top + 1)) {
+                return true;
+            }
+        }
     }
 
-    public bottom() { return this.y + this.height; }
-    public leadingEdge() { return this.velocityX < 0 ? this.x : this.x + this.width; }
-    public trailingEdge() { return this.velocityX < 0 ? this.x + this.width : this.x; }
-    public isMoving() { return this.velocityX != 0; }
-    public isJumping() { return this.velocityY < 0; }
-    public isFalling() { return this.velocityY > 0; }
+    public standingOnAPlatform(gameState: Game) {
+        for (let x = this.x; x < this.x + this.width; x++) {
+            if (gameState.playfield.isSolidSurface(x, this.bottom + 1)) {
+                return true;
+            }
+        }
+    }
+
+    public get top() { return this.y; }
+    public get bottom() { return this.y + this.height; }
+    public get leadingEdge() { return this.velocityX < 0 ? this.x : this.x + this.width; }
+    public get trailingEdge() { return this.velocityX < 0 ? this.x + this.width : this.x; }
+    public get isMoving() { return this.velocityX != 0; }
+    public get isJumping() { return this.velocityY < 0; }
+    public get isFalling() { return this.velocityY > 0; }
 }

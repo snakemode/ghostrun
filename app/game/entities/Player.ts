@@ -8,7 +8,7 @@ export class Player extends Character {
     }
 
     public async tickBehaviour(gameState: Game) {
-        if (gameState.playfield.isGoal(this.leadingEdge(), this.y)) {
+        if (gameState.playfield.isGoal(this.leadingEdge, this.y)) {
             gameState.stop();
             return;
         }
@@ -31,7 +31,7 @@ export class Player extends Character {
         }
 
         if (game.controls.up && this.standingOnAPlatform(game)) {
-            this.velocityY = -8;
+            this.velocityY = -20;
             game.sounds.jump();
         }
     }
