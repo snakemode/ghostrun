@@ -18,23 +18,9 @@ export abstract class Entity {
         this.behaviours = new Map<string, IBehaviour>();
     }
 
-    public addBehaviour(key: string, behaviour: IBehaviour) {
-        this.behaviours.set(key, behaviour);
-    }
-
-    public behaviour<T = any>(key: string) {
-        return this.behaviours.get(key) as T;
-    }
-
-    public hasBehaviour(key: string, callback: (behaviour: IBehaviour) => void) {
-        if (this.behaviours.has(key)) {
-            callback(this.behaviours.get(key));
-        }
-    }
-
     public async tick(gameState: Game) {
         this.beforeTick(gameState);
-        
+
         for (const [key, behaviour] of this.behaviours.entries()) {
             const response = await behaviour.act(gameState);
 
@@ -53,4 +39,18 @@ export abstract class Entity {
 
     abstract beforeTick(gameState: Game): Promise<void>;
     abstract tickBehaviour(gameState: Game): Promise<void | CallableFunction | false>;
+
+    public addBehaviour(key: string, behaviour: IBehaviour) {
+        this.behaviours.set(key, behaviour);
+    }
+
+    public behaviour<T = any>(key: string) {
+        return this.behaviours.get(key) as T;
+    }
+
+    public hasBehaviour(key: string, callback: (behaviour: IBehaviour) => void) {
+        if (this.behaviours.has(key)) {
+            callback(this.behaviours.get(key));
+        }
+    }
 }

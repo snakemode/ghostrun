@@ -14,6 +14,7 @@ export class Player extends Character {
         }
 
         this.processControls(gameState);
+        super.tickBehaviour(gameState);
     }
 
     private processControls(game: Game) {

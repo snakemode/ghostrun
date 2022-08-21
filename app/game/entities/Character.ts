@@ -1,6 +1,5 @@
 import { Game } from "../Game";
 import { ITickable } from "../roles/ITickable";
-import { Movable } from "../behaviours/Movable";
 import { Killable } from "../behaviours/Killable";
 import { PhysicsObject } from "./PhysicsObject";
 
@@ -12,13 +11,11 @@ export class Character extends PhysicsObject implements ITickable {
     constructor(x: number, y: number, width: number, height: number, runningSprite: any, reverseSprite: any) {
         super(x, y, width, height);
 
-        this.addBehaviour(Movable.name, new Movable(this));
         this.addBehaviour(Killable.name, new Killable(this));
 
         this.runningSprite = runningSprite;
         this.runningSpriteReversed = reverseSprite;
     }
-
 
     public draw(gameState: Game) {
         if (!this.isAlive || !this.runningSprite) { 

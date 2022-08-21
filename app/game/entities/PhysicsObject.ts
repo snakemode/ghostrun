@@ -24,6 +24,26 @@ export class PhysicsObject extends Entity {
     }
 
     public async tickBehaviour(gameState: Game) {
+        var nextX = this.x + this.velocityX;
+        var nextY = this.y + this.velocityY;
+        var nextLeadingX = this.leadingEdge() + this.velocityX;
+
+        var walkingIntoSurface = gameState.playfield.isSolidSurface(nextLeadingX, this.y);
+
+        if (this.isMoving() && walkingIntoSurface) {
+            nextX = this.x;
+            this.velocityX = 0;
+        }
+
+        var topLeftIsSolid = gameState.playfield.isSolidSurface(this.leadingEdge(), this.y);
+        var topRightIsSolid = gameState.playfield.isSolidSurface(this.trailingEdge(), this.y);
+
+        if ((topLeftIsSolid || topRightIsSolid) && this.isJumping()) {
+            this.velocityY = gameState.player.gravity;
+        }
+
+        this.x = nextX;
+        this.y = nextY;
     }
 
     private async applyGravity(gameState: Game) {            
