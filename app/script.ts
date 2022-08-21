@@ -1,7 +1,7 @@
 import { Game } from "./game/Game";
 import { Player } from "./game/entities/Player";
 
-document.getElementById("btn").addEventListener("click", () => {
+//document.getElementById("btn").addEventListener("click", () => {
     
     const canvas = document.createElement("CANVAS") as HTMLCanvasElement;
     canvas.setAttribute("id", "game");
@@ -18,6 +18,6 @@ document.getElementById("btn").addEventListener("click", () => {
     game.addPlayer(player);
     game.setRenderContext(ctx);
     game.start();
-});
+//});
 
 export { };

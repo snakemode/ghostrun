@@ -22,6 +22,11 @@ export class Sprite {
     }
 
     drawFrame(frameNumber, x, y, height, width, ctx) {
+        ctx.beginPath();
+        ctx.lineWidth = "1";
+        ctx.strokeStyle = "red";
+        ctx.rect(x, y, width - 1, height - 1);
+        ctx.stroke();
         ctx.drawImage(this.frames[frameNumber], x, y, width, height);
     }
 }

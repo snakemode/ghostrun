@@ -33,6 +33,8 @@ export abstract class Entity {
     }
 
     public async tick(gameState: Game) {
+        this.beforeTick(gameState);
+        
         for (const [key, behaviour] of this.behaviours.entries()) {
             const response = await behaviour.act(gameState);
 
@@ -45,7 +47,6 @@ export abstract class Entity {
             }
         }
 
-        this.beforeTick(gameState);
         this.tickBehaviour(gameState);
     }
 

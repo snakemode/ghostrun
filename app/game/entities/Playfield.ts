@@ -6,7 +6,6 @@ import { Level } from "./Level";
 export class Playfield implements ITickable {
     public height = 480;
     public width = 640;
-    public gravity = 10;
     public distanceTravelled = 0;
     public tickCount = 0;
     public enemies: Enemy[];
@@ -68,9 +67,10 @@ export class Playfield implements ITickable {
     public isPit(x: number, y: number) { return this.getPixelType(x, y) == "pit"; }
     public isGoal(x: number, y: number) { return this.getPixelType(x, y) == "exit"; }
 
+
     public getPixelType(x: number, y: number) {
         if (!this.collisionMap) { 
-            return "."; 
+            return "#"; 
         }
 
         const mapData = this.collisionMap.getImageData(x, y, 1, 1);
@@ -88,6 +88,8 @@ export class Playfield implements ITickable {
 
         if (mask == "0 0 0 255")
             return "#";
+
+        return "#";
     }
 
     public levelEndOffset() { return this.map.width - this.width; }

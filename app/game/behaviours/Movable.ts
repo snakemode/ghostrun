@@ -26,7 +26,7 @@ export class Movable implements IBehaviour {
         var topRightIsSolid = gameState.playfield.isSolidSurface(this.entity.trailingEdge(), this.entity.y);
 
         if ((topLeftIsSolid || topRightIsSolid) && this.entity.isJumping()) {
-            this.entity.velocityY = gameState.playfield.gravity;
+            this.entity.velocityY = gameState.player.gravity;
         }
 
         this.entity.x = nextX;

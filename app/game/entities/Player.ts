@@ -4,7 +4,7 @@ import { Character } from "./Character";
 
 export class Player extends Character {
     constructor() {
-        super(160, 390, 25, 25, new Sprite("graphics/cat", 5), new Sprite("graphics/cat.backwards", 5));
+        super(160, 390, 56, 25, new Sprite("graphics/cat", 5), new Sprite("graphics/cat.backwards", 5));
     }
 
     public async tickBehaviour(gameState: Game) {

@@ -19,9 +19,6 @@ export class Character extends PhysicsObject implements ITickable {
         this.runningSpriteReversed = reverseSprite;
     }
 
-    public async tickBehaviour(gameState: Game) {
-        super.tick(gameState);
-    }
 
     public draw(gameState: Game) {
         if (!this.isAlive || !this.runningSprite) { 
