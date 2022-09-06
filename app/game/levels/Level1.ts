@@ -16,7 +16,7 @@ export class Level1 extends Level {
         this.enemies.push(new Enemy(4000, 100));
         this.enemies.push(new Enemy(5600, 100));
         this.enemies.push(new Enemy(6500, 100));
-        this.enemies.push(new Enemy(7600, 100));
+     //   this.enemies.push(new Enemy(7600, 100));
     }
     
     public onTick(gameState: Game): void {

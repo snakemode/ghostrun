@@ -28,7 +28,7 @@ export class Sprite {
             ctx.beginPath();
             ctx.lineWidth = "1";
             ctx.strokeStyle = "red";
-            ctx.rect(x, canvasY, width - 1, height - 1);
+            ctx.rect(x, canvasY, width, height);
             ctx.stroke();
         }
 

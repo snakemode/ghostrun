@@ -4,10 +4,12 @@ import { IBehaviour } from "./IBehaviour";
 import { PhysicsObject } from "../entities/PhysicsObject";
 
 export class Killable implements IBehaviour {
+    public id: string;
     public isAlive: boolean;
     private entity: PhysicsObject;
 
     constructor(parent: Entity) {
+        this.id = Math.random().toString(36).substr(2, 9);
         this.entity = parent as PhysicsObject;
         this.isAlive = true;
     }
@@ -18,12 +20,18 @@ export class Killable implements IBehaviour {
         }
 
         if (gameState.playfield.isPit(this.entity.leadingEdge, this.entity.bottom)) {
-            this.kill();
+            this.kill(this);
             return false; // short circuit the rest of the behaviours
         }
     }
 
-    public kill() {
+    public kill(killer: Entity | IBehaviour) {
+        if (killer) {
+            console.log(this.entity?.constructor?.name, this.entity.id, "was killed by", killer?.constructor?.name, killer.id);
+        } else {
+            console.log(this.entity?.constructor?.name, this.entity.id, "was killed by the unknown?!?");
+        }
+
         this.isAlive = false;
         this.entity.velocityX = 0;
         this.entity.velocityY = 0;

@@ -41,8 +41,9 @@ export class Game {
         await this.loop();
     }
 
-    public stop() {
+    public stop(message: { reason: string }) {
         this.finished = true;
+        console.log("Game ended:", message.reason);
         window.clearTimeout(this.timer);
     }
 

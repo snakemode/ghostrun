@@ -9,7 +9,7 @@ export class Player extends Character {
 
     public async tickBehaviour(gameState: Game) {
         if (gameState.playfield.isGoal(this.leadingEdge, this.y)) {
-            gameState.stop();
+            gameState.stop({ reason: "completed" });
             return;
         }
 

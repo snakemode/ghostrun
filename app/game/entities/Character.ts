@@ -6,8 +6,8 @@ import { Sprite } from "./Sprite";
 
 export class Character extends PhysicsObject implements ITickable {
 
-    runningSprite: any;
-    runningSpriteReversed: any;
+    runningSprite: Sprite;
+    runningSpriteReversed: Sprite;
 
     constructor(x: number, y: number, width: number, height: number, runningSprite: Sprite, reverseSprite: Sprite) {
         super(x, y, width, height);
@@ -27,7 +27,7 @@ export class Character extends PhysicsObject implements ITickable {
         screenX = screenX > this.x ? this.x : screenX;
 
         if (gameState.playfield.atLevelEnd()) {
-            screenX = (gameState.playfield.width - (gameState.playfield.width - gameState.playfield.distanceTravelled - (this.x - gameState.playfield.distanceTravelled)));
+            screenX = (gameState.playfield.width - (gameState.playfield.map.width - gameState.playfield.distanceTravelled - (this.x - gameState.playfield.distanceTravelled)));
         }
 
         var sprite = this.velocityX < 0 ? this.runningSpriteReversed : this.runningSprite;

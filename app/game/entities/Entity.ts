@@ -2,6 +2,7 @@ import { Game } from "../Game";
 import { IBehaviour } from "../behaviours/IBehaviour";
 
 export abstract class Entity {
+    public id: string;
     public x: number;
     public y: number;
     public height: number;
@@ -10,6 +11,7 @@ export abstract class Entity {
     private behaviours: Map<string, IBehaviour>;
 
     constructor(x: number, y: number, width: number, height: number) {
+        this.id = Math.random().toString(36).substr(2, 9);
         this.x = x;
         this.y = y;
         this.height = height;

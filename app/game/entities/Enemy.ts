@@ -20,7 +20,7 @@ export class Enemy extends Character {
         if (this.collidesWith(gameState.player)) {
 
             gameState.player.hasBehaviour(Killable.name, (killable: Killable) => {
-                killable.kill();
+                killable.kill(this);
             });
         }
     }
