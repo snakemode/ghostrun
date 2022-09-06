@@ -90,7 +90,7 @@ export class Playfield implements ITickable {
         if (mask == "255 0 0 255")
             return "pit";
 
-        if (mask == "76 255 0 255")
+        if (mask == "0 255 0 255")
             return "exit";
 
         if (mask == "255 255 255 255")
