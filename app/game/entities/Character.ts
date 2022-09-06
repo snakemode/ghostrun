@@ -33,11 +33,11 @@ export class Character extends PhysicsObject implements ITickable {
         var sprite = this.velocityX < 0 ? this.runningSpriteReversed : this.runningSprite;
 
         if (this.isJumping || this.isFalling) {
-            sprite.drawFrame(gameState, 4, screenX, this.y, this.height, this.width, gameState.ctx);
+            sprite.drawFrame(gameState, 4, screenX, this.y, this.height, this.width, gameState.playfield.ctx);
         } else if (this.isMoving) {
-            sprite.draw(gameState, gameState.playfield.tickCount, screenX, this.y, this.height, this.width, gameState.ctx);
+            sprite.draw(gameState, gameState.playfield.tickCount, screenX, this.y, this.height, this.width, gameState.playfield.ctx);
         } else {
-            sprite.drawFrame(gameState, 1, screenX, this.y, this.height, this.width, gameState.ctx);
+            sprite.drawFrame(gameState, 1, screenX, this.y, this.height, this.width, gameState.playfield.ctx);
         }
     }
 

@@ -4,10 +4,13 @@ import { ITickable } from "../roles/ITickable";
 import { Level } from "./Level";
 
 export class Playfield implements ITickable {
-    public height = 480;
     public width = 640;
+    public height = 480;
     public distanceTravelled = 0;
-    public tickCount = 0;
+    public tickCount = 0;    
+
+    public canvas: HTMLCanvasElement;
+    public ctx: CanvasRenderingContext2D;
  
     public map: HTMLImageElement;
     private collisionMapImage: HTMLImageElement;
@@ -16,8 +19,16 @@ export class Playfield implements ITickable {
     private level: Level;
     private parent: Game;
 
-    constructor(gameState: Game) {
+    constructor(gameState: Game, width = 640, height = 480) {
         this.parent = gameState;
+        this.width = width;
+        this.height = height;
+        
+        this.canvas = document.createElement("CANVAS") as HTMLCanvasElement;
+        this.canvas.setAttribute("id", "game");
+        this.canvas.setAttribute("width", width + "px");
+        this.canvas.setAttribute("height", height + "px");
+        this.ctx = this.canvas.getContext("2d");
     }
 
     public async init(level: Level) {
@@ -87,6 +98,9 @@ export class Playfield implements ITickable {
 
         if (mask == "0 0 0 255")
             return "#";
+        
+        if (y >= this.height)
+            return ".";
 
         return "#";
     }
@@ -103,7 +117,7 @@ export class Playfield implements ITickable {
 
         const visual = this.parent.debug ? this.collisionMapImage : this.map;
 
-        gameState.ctx.drawImage(visual, drawAtX, 0);
+        this.ctx.drawImage(visual, drawAtX, 0);
 
         for (var i = 0; i < this.level.enemies.length; i++) {
             this.level.enemies[i].draw(gameState);

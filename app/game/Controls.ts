@@ -6,8 +6,9 @@ export class Controls {
     public left: boolean;
     public right: boolean;
     public space: boolean;
+    public shift: boolean;
 
-    private mapping = { 65: "left", 68: "right", 87: "up", 83: "down" };
+    private mapping = { 65: "left", 68: "right", 87: "up", 83: "down", 16: "shift" };
 
     public buttonPress(keyInfo: any) {
         this[this.mapping[keyInfo.keyCode]] = true;
@@ -19,6 +20,7 @@ export class Controls {
 
     public connect(game: Game) {
         window.addEventListener("keydown", (keyInfo) => { 
+            console.log(keyInfo);
             game.controls.buttonPress(event); 
         }, false);
 

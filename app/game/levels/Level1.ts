@@ -11,18 +11,18 @@ export class Level1 extends Level {
 
     public onStart(level: Playfield) {
         this.enemies.push(new Enemy(500, 100));
-        this.enemies.push(new Enemy(2000, 100));
+        this.enemies.push(new Enemy(2000, 600));
         this.enemies.push(new Enemy(3700, 100));
         this.enemies.push(new Enemy(4000, 100));
         this.enemies.push(new Enemy(5600, 100));
         this.enemies.push(new Enemy(6500, 100));
-     //   this.enemies.push(new Enemy(7600, 100));
+        this.enemies.push(new Enemy(7600, 100));
     }
     
     public onTick(gameState: Game): void {
         for (var i = 0; i < this.enemies.length; i++) {
             var distanceFromPlayer = Math.abs(gameState.player.x - this.enemies[i].x);
-            if (distanceFromPlayer <= gameState.playfield.width * 2) {
+            if (distanceFromPlayer <= gameState.playfield.width) {
                 this.enemies[i].tick(gameState);
             }
         }
