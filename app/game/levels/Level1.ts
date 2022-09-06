@@ -6,11 +6,11 @@ import { Game } from "../Game";
 export class Level1 extends Level {
 
     constructor() {
-        super("level.png", "level-map.png");
+        super("kitchen-bg.png", "kitchen-map.png");
     }
 
     public onStart(level: Playfield) {
-        this.enemies.push(new Enemy(500, 100));
+        this.enemies.push(new Enemy(1000, 100));
         this.enemies.push(new Enemy(2000, 600));
         this.enemies.push(new Enemy(3700, 100));
         this.enemies.push(new Enemy(4000, 100));

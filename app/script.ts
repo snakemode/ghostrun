@@ -5,7 +5,7 @@ import { Game } from "./game/Game";
 const debugCheckbox = document.getElementById("debug") as HTMLInputElement;
 const container = document.getElementById("container") as HTMLDivElement;
 
-const game = new Game(window.innerWidth - 20, 480);
+const game = new Game(window.innerWidth - 20, 552);
 
 game.onGameEnd((reason: string, data: SaveFile) => {
     console.log("Game ended:", reason, data);
