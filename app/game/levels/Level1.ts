@@ -10,13 +10,13 @@ export class Level1 extends Level {
     }
 
     public onStart(level: Playfield) {
-        // this.enemies.push(new Enemy(500, 100));
-        // this.enemies.push(new Enemy(2000, 100));
-        // this.enemies.push(new Enemy(3700, 100));
-        // this.enemies.push(new Enemy(4000, 100));
-        // this.enemies.push(new Enemy(5600, 100));
-        // this.enemies.push(new Enemy(6500, 100));
-        // this.enemies.push(new Enemy(7600, 100));
+        this.enemies.push(new Enemy(500, 100));
+        this.enemies.push(new Enemy(2000, 100));
+        this.enemies.push(new Enemy(3700, 100));
+        this.enemies.push(new Enemy(4000, 100));
+        this.enemies.push(new Enemy(5600, 100));
+        this.enemies.push(new Enemy(6500, 100));
+        this.enemies.push(new Enemy(7600, 100));
     }
     
     public onTick(gameState: Game): void {

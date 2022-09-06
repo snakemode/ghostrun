@@ -31,22 +31,22 @@ describe("PhysicsObject", () => {
 
         physicsObject.tickBehaviour({ playfield } as any);
 
-        expect(physicsObject.x).toBe(49);
+        expect(physicsObject.x).toBe(0);
         expect(physicsObject.y).toBe(0);
-        expect(physicsObject.trailingEdge).toBe(49);
-        expect(physicsObject.leadingEdge).toBe(149);
+        expect(physicsObject.trailingEdge).toBe(0);
+        expect(physicsObject.leadingEdge).toBe(100);
         expect(physicsObject.top).toBe(100);
         expect(physicsObject.bottom).toBe(0);
     }, 33);
-
+    
     it("can fall vertically", () => {
         const playfield = {
             isSolidSurface: (x: number, y: number) => {
-                return (x < 0 || x >= 1000) || (y < 0 || y >= 1000);
+                return x < 0 || x >= 1000 || y < 0 || y >= 1000;
             }
         }
 
-        const physicsObject = new PhysicsObject(0, 1, 100, 100, 0, 0);        
+        const physicsObject = new PhysicsObject(0, 1, 100, 100, 0, 0);
 
         physicsObject.tickBehaviour({ playfield } as any);
 
@@ -75,10 +75,10 @@ describe("PhysicsObject", () => {
         physicsObject.tickBehaviour({ playfield } as any);
 
         expect(physicsObject.x).toBe(0);
-        expect(physicsObject.y).toBe(49);
+        expect(physicsObject.y).toBe(48);
         expect(physicsObject.trailingEdge).toBe(0);
         expect(physicsObject.leadingEdge).toBe(100);
-        expect(physicsObject.top).toBe(49);
-        expect(physicsObject.bottom).toBe(149);
+        expect(physicsObject.top).toBe(148);
+        expect(physicsObject.bottom).toBe(48);
     }, 33);
 });

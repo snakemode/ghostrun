@@ -70,7 +70,9 @@ export class Playfield implements ITickable {
             return "#"; 
         }
 
-        const mapData = this.collisionMap.getImageData(x, y, 1, 1);
+        const flippedY = this.height - y;
+
+        const mapData = this.collisionMap.getImageData(x, flippedY, 1, 1);
         var rawData = mapData.data;
         var mask = rawData[0] + " " + rawData[1] + " " + rawData[2] + " " + rawData[3];
         
