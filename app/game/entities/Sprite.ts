@@ -22,14 +22,16 @@ export class Sprite {
     }
 
     drawFrame(gameState, frameNumber, x, y, height, width, ctx) {
+        const canvasY = gameState.playfield.height - y - height;
+
         if (gameState.debug) {
             ctx.beginPath();
             ctx.lineWidth = "1";
             ctx.strokeStyle = "red";
-            ctx.rect(x, y, width - 1, height - 1);
+            ctx.rect(x, canvasY, width - 1, height - 1);
             ctx.stroke();
         }
 
-        ctx.drawImage(this.frames[frameNumber], x, y, width, height);
+        ctx.drawImage(this.frames[frameNumber], x, canvasY, width, height);
     }
 }

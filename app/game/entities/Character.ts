@@ -2,13 +2,14 @@ import { Game } from "../Game";
 import { ITickable } from "../roles/ITickable";
 import { Killable } from "../behaviours/Killable";
 import { PhysicsObject } from "./PhysicsObject";
+import { Sprite } from "./Sprite";
 
 export class Character extends PhysicsObject implements ITickable {
 
     runningSprite: any;
     runningSpriteReversed: any;
 
-    constructor(x: number, y: number, width: number, height: number, runningSprite: any, reverseSprite: any) {
+    constructor(x: number, y: number, width: number, height: number, runningSprite: Sprite, reverseSprite: Sprite) {
         super(x, y, width, height);
 
         this.addBehaviour(Killable.name, new Killable(this));

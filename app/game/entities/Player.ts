@@ -4,7 +4,7 @@ import { Character } from "./Character";
 
 export class Player extends Character {
     constructor() {
-        super(160, 390, 56, 25, new Sprite("graphics/cat", 5), new Sprite("graphics/cat.backwards", 5));
+        super(180, 300, 56, 25, new Sprite("graphics/cat", 5), new Sprite("graphics/cat.backwards", 5));
     }
 
     public async tickBehaviour(gameState: Game) {
@@ -31,7 +31,7 @@ export class Player extends Character {
         }
 
         if (game.controls.up && this.standingOnAPlatform(game)) {
-            this.velocityY = -20;
+            this.velocityY = 20;
             game.sounds.jump();
         }
     }
