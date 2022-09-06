@@ -20,7 +20,6 @@ export class Controls {
 
     public connect(game: Game) {
         window.addEventListener("keydown", (keyInfo) => { 
-            console.log(keyInfo);
             game.controls.buttonPress(event); 
         }, false);
 

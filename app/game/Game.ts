@@ -3,6 +3,8 @@ import { Sounds } from "./Sounds";
 import { Player } from "./entities/Player";
 import { Playfield } from "./entities/Playfield";
 import { Level1 } from "./levels/Level1";
+import { lzw_decode, lzw_encode } from "./compression/LZString";
+import { SaveFile } from "./entities/SaveFile";
 
 export class Game {
     private timer: any;
@@ -15,6 +17,8 @@ export class Game {
     
     public debug: boolean;
 
+    private gameEndCallback: ((reason: string, data: SaveFile) => void);
+
     constructor(width: number = 640, height: number = 480) {
         this.debug = false;
         this.finished = false;
@@ -23,6 +27,8 @@ export class Game {
 
         this.playfield = new Playfield(this, width, height);
         this.player = null;
+
+        this.gameEndCallback = (_, __) => {};
     }
 
     public async start() {
@@ -44,9 +50,20 @@ export class Game {
         this.finished = true;
         console.log("Game ended:", message.reason);
         window.clearTimeout(this.timer);
+
+        this.gameEndCallback(message.reason, this.player.saveFile);
+    }
+
+    public onGameEnd(cb: (reason: string, data: SaveFile) => void) {
+        this.gameEndCallback = cb;
     }
 
     public async loop() {
+        if (!this.player.isAlive) {
+            this.stop({ reason: "dead" });
+            return;
+        }
+
         if (this.finished) {
             return;
         }

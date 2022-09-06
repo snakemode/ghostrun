@@ -1,10 +1,14 @@
 import { Game } from "../Game";
 import { Sprite } from "./Sprite";
 import { Character } from "./Character";
+import { SaveFile } from "./SaveFile";
 
 export class Player extends Character {
+    public saveFile: SaveFile;
+
     constructor() {
         super(180, 300, 56, 25, new Sprite("graphics/cat", 5), new Sprite("graphics/cat.backwards", 5));
+        this.saveFile = new SaveFile();
     }
 
     public async tickBehaviour(gameState: Game) {
@@ -13,8 +17,15 @@ export class Player extends Character {
             return;
         }
 
+        if (!gameState.player.isAlive) {
+            gameState.stop({ reason: "dead" });
+            return;
+        }
+
         this.processControls(gameState);
         super.tickBehaviour(gameState);
+
+        this.saveFile.push(this.x, this.y);
     }
 
     private processControls(game: Game) {

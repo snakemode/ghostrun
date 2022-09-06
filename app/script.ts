@@ -1,13 +1,30 @@
+import { lzw_encode, lzw_decode } from "./game/compression/LZString";
+import { SaveFile } from "./game/entities/SaveFile";
 import { Game } from "./game/Game";
     
-
 const debugCheckbox = document.getElementById("debug") as HTMLInputElement;
 const container = document.getElementById("container") as HTMLDivElement;
 
 const game = new Game(window.innerWidth - 20, 480);
 
+game.onGameEnd((reason: string, data: SaveFile) => {
+    console.log("Game ended:", reason, data);
+    
+    console.log("Recorded", data, "frames of input");
+
+    const str = JSON.stringify(data);
+    const encoded = lzw_encode(str);
+    console.log("Compressed to", encoded.length, "characters");
+    
+    const decoded = lzw_decode(encoded);
+    const save = SaveFile.fromJson(decoded);
+    console.log("loaded save", save);
+
+});
+
 container.appendChild(game.playfield.canvas);  
 game.debug = debugCheckbox.checked ? true : false; 
+
 game.start();
 
 debugCheckbox.addEventListener("change", (value: any) => {
