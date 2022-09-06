@@ -9,18 +9,18 @@ const game = new Game(window.innerWidth - 20, 480);
 
 game.onGameEnd((reason: string, data: SaveFile) => {
     console.log("Game ended:", reason, data);
-    
     console.log("Recorded", data, "frames of input");
 
     const str = JSON.stringify(data);
     const encoded = lzw_encode(str);
-    console.log("Compressed to", encoded.length, "characters");
-    
-    const decoded = lzw_decode(encoded);
-    const save = SaveFile.fromJson(decoded);
-    console.log("loaded save", save);
+    localStorage.setItem("save", encoded);
+})
 
-});
+if (localStorage.getItem("save")) {
+    const save = SaveFile.fromJson(lzw_decode(localStorage.getItem("save")));
+    console.log("loaded save from local storage", save);
+    game.addGhost(save);
+}
 
 container.appendChild(game.playfield.canvas);  
 game.debug = debugCheckbox.checked ? true : false; 

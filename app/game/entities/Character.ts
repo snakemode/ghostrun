@@ -41,7 +41,7 @@ export class Character extends PhysicsObject implements ITickable {
         }
     }
 
-    public get isAlive() {        
-        return this.behaviour<Killable>(Killable.name).isAlive;
+    public get isAlive() {
+        return this.behaviour<Killable>(Killable.name)?.isAlive;
     }
 }

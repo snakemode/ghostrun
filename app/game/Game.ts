@@ -3,12 +3,13 @@ import { Sounds } from "./Sounds";
 import { Player } from "./entities/Player";
 import { Playfield } from "./entities/Playfield";
 import { Level1 } from "./levels/Level1";
-import { lzw_decode, lzw_encode } from "./compression/LZString";
 import { SaveFile } from "./entities/SaveFile";
+import { Ghost } from "./entities/Ghost";
 
 export class Game {
     private timer: any;
     private finished: boolean;
+    private ghosts: Ghost[];
 
     public controls: Controls;
     public sounds: Sounds;
@@ -27,8 +28,13 @@ export class Game {
 
         this.playfield = new Playfield(this, width, height);
         this.player = null;
+        this.ghosts = [];
 
         this.gameEndCallback = (_, __) => {};
+    }
+
+    public addGhost(save: SaveFile) {
+        this.ghosts.push(new Ghost(save));
     }
 
     public async start() {
@@ -56,7 +62,7 @@ export class Game {
 
     public onGameEnd(cb: (reason: string, data: SaveFile) => void) {
         this.gameEndCallback = cb;
-    }
+    } 
 
     public async loop() {
         if (!this.player.isAlive) {
@@ -70,10 +76,12 @@ export class Game {
 
         await this.playfield.tick(this);
         await this.player.tick(this);
+        this.ghosts.forEach(g => g.tick(this));
 
         if (this.playfield.ctx) {
             this.playfield.draw(this);
-            this.player.draw(this);
+            this.player.draw(this);            
+            this.ghosts.forEach(g => g.draw(this));
         }
 
         this.timer = window.setTimeout(async () => {

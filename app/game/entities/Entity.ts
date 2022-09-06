@@ -42,6 +42,10 @@ export abstract class Entity {
     abstract beforeTick(gameState: Game): Promise<void>;
     abstract tickBehaviour(gameState: Game): Promise<void | CallableFunction | false>;
 
+    protected clearBehaviours() {
+        this.behaviours.clear();
+    }
+
     public addBehaviour(key: string, behaviour: IBehaviour) {
         this.behaviours.set(key, behaviour);
     }
