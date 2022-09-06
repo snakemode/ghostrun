@@ -11,7 +11,8 @@
     "test": "npm run test:app && npm run test:api",
     "test:app": "vitest run",
     "test:api": "cd api && vitest run",
-    "build:azure": "npx vite build"
+    "build:azure": "npx vite build",
+    "build:netlify": "npx vite build"
   },
   "author": "",
   "license": "ISC",
