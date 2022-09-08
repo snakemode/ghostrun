@@ -10,7 +10,7 @@ import { isDrawable } from "./behaviours/IDrawable";
 
 export class Game {
     private timer: any;
-    private finished: boolean;
+    public finished: boolean;
     private ghosts: Ghost[];
 
     public controls: Controls;

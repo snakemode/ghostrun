@@ -69,7 +69,7 @@ export class Controls {
         });
 
         setInterval(() => {
-            if (this.start && !game.player.isAlive) {
+            if (this.start && game.finished) {
                 game.start();
             }
         }, 16);
