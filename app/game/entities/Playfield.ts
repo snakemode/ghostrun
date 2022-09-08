@@ -1,20 +1,20 @@
-import { Enemy } from "./Enemy";
 import { Game } from "../Game";
-import { ITickable } from "../roles/ITickable";
-import { Level } from "./Level";
+import { isDrawable } from "../behaviours/IDrawable";
+import { ITickable } from "../behaviours/ITickable";
+import { Level } from "../levels/Level";
 
 export class Playfield implements ITickable {
     public width = 640;
     public height = 480;
-    public distanceTravelled = 0;
     public tickCount = 0;    
+    public distanceTravelled = 0;
 
-    public canvas: HTMLCanvasElement;
     public ctx: CanvasRenderingContext2D;
+    public canvas: HTMLCanvasElement;
  
     public map: HTMLImageElement;
-    private collisionMapImage: HTMLImageElement;
     public collisionMap: CanvasRenderingContext2D;
+    private collisionMapImage: HTMLImageElement;
 
     private level: Level;
     private parent: Game;
@@ -59,7 +59,8 @@ export class Playfield implements ITickable {
     public async tick(gameState: Game) {
         this.tickCount++;
         this.distanceTravelled += gameState.player.velocityX;
-        this.level.onTick(gameState);
+        
+        this.level.tick(gameState);
     }
 
     public getFloorBelowY(x, y) {
@@ -119,8 +120,10 @@ export class Playfield implements ITickable {
 
         this.ctx.drawImage(visual, drawAtX, 0);
 
-        for (var i = 0; i < this.level.enemies.length; i++) {
-            this.level.enemies[i].draw(gameState);
+        for (const entity of this.level.entities) {
+            if (isDrawable(entity)) {
+                entity.draw(gameState);
+            }
         }
     }
 }

@@ -1,5 +1,5 @@
 import { Game } from "../Game";
-import { Sprite } from "./Sprite";
+import { Sprite } from "../Sprite";
 import { Character } from "./Character";
 import { Killable } from "../behaviours/Killable";
 

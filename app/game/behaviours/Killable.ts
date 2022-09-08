@@ -1,5 +1,5 @@
 import { Game } from "../Game";
-import { Entity } from "../entities/Entity";
+import { EntityBase } from "../entities/EntityBase";
 import { IBehaviour } from "./IBehaviour";
 import { PhysicsObject } from "../entities/PhysicsObject";
 
@@ -8,7 +8,7 @@ export class Killable implements IBehaviour {
     public isAlive: boolean;
     private entity: PhysicsObject;
 
-    constructor(parent: Entity) {
+    constructor(parent: EntityBase) {
         this.id = Math.random().toString(36).substr(2, 9);
         this.entity = parent as PhysicsObject;
         this.isAlive = true;
@@ -25,7 +25,7 @@ export class Killable implements IBehaviour {
         }
     }
 
-    public kill(killer: Entity | IBehaviour) {
+    public kill(killer: EntityBase | IBehaviour) {
         if (killer) {
             console.log(this.entity?.constructor?.name, this.entity.id, "was killed by", killer?.constructor?.name, killer.id);
         } else {

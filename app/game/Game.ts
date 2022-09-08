@@ -3,7 +3,7 @@ import { Sounds } from "./Sounds";
 import { Player } from "./entities/Player";
 import { Playfield } from "./entities/Playfield";
 import { Level1 } from "./levels/Level1";
-import { SaveFile } from "./entities/SaveFile";
+import { SaveFile } from "./SaveFile";
 import { Ghost } from "./entities/Ghost";
 
 export class Game {

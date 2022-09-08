@@ -1,5 +1,4 @@
-import { lzw_encode, lzw_decode } from "./game/compression/LZString";
-import { SaveFile } from "./game/entities/SaveFile";
+import { SaveFile, lzw_encode, lzw_decode } from "./game/SaveFile";
 import { Game } from "./game/Game";
     
 const debugCheckbox = document.getElementById("debug") as HTMLInputElement;

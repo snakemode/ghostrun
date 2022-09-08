@@ -1,7 +1,7 @@
 import { Game } from "../Game";
 import { IBehaviour } from "../behaviours/IBehaviour";
 
-export abstract class Entity {
+export abstract class EntityBase {
     public id: string;
     public x: number;
     public y: number;

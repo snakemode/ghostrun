@@ -1,7 +1,7 @@
 import { Game } from "../Game";
-import { Entity } from "./Entity";
+import { EntityBase } from "./EntityBase";
 
-export class PhysicsObject extends Entity {
+export class PhysicsObject extends EntityBase {
     public velocityX: number;
     public velocityY: number;
 

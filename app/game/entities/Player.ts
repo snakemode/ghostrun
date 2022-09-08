@@ -1,7 +1,7 @@
 import { Game } from "../Game";
-import { Sprite } from "./Sprite";
+import { Sprite } from "../Sprite";
 import { Character } from "./Character";
-import { SaveFile } from "./SaveFile";
+import { SaveFile } from "../SaveFile";
 
 export class Player extends Character {
     public saveFile: SaveFile;
