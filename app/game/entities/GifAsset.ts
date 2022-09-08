@@ -8,7 +8,6 @@ import { EntityBase } from "./EntityBase";
 export class GifAsset extends EntityBase implements IDrawable, IInitialisable {
 
     public filename: string;
-    public zIndex: number;
 
     private _gif: HTMLCanvasElement;
 

@@ -6,7 +6,7 @@ export interface IDrawable {
     height: number;
     width: number;
 
-    zIndex?: number;
+    zIndex: number;
 
     draw(gameState: Game): void;
 }

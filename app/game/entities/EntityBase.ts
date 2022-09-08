@@ -1,13 +1,15 @@
 import { Game } from "../Game";
 import { IBehaviour } from "../behaviours/IBehaviour";
 import { ITickable } from "../behaviours/ITickable";
+import { IDrawable } from "../behaviours/IDrawable";
 
-export abstract class EntityBase implements ITickable {
+export abstract class EntityBase implements ITickable, IDrawable {
     public id: string;
     public x: number;
     public y: number;
     public height: number;
     public width: number;
+    public zIndex: number;
 
     private behaviours: Map<string, IBehaviour>;
 
@@ -17,6 +19,7 @@ export abstract class EntityBase implements ITickable {
         this.y = y;
         this.height = height;
         this.width = width;
+        this.zIndex = 0;
 
         this.behaviours = new Map<string, IBehaviour>();
     }
@@ -41,6 +44,7 @@ export abstract class EntityBase implements ITickable {
 
     abstract beforeTick(gameState: Game): Promise<void>;
     abstract onTick(gameState: Game): Promise<void | CallableFunction | false>;
+    abstract draw(gameState: Game): void;
 
     protected clearBehaviours() {
         this.behaviours.clear();

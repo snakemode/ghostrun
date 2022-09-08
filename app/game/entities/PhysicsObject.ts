@@ -1,3 +1,4 @@
+import { IDrawable } from "../behaviours/IDrawable";
 import { Game } from "../Game";
 import { EntityBase } from "./EntityBase";
 
@@ -129,6 +130,9 @@ export class PhysicsObject extends EntityBase {
         }
     }
 
+    public draw(gameState: Game): void {
+        throw new Error("Method not implemented - should be implemented by derived class.");
+    }
 
     public get top() { return this.y + this.height; }
     public get bottom() { return this.y; }

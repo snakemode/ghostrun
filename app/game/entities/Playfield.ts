@@ -10,6 +10,7 @@ export class Playfield implements ITickable, IDrawable {
     public y = 0;
     public width = 640;
     public height = 480;
+    public zIndex = -1;
 
     public tickCount = 0;    
     public cameraXposition = 0;

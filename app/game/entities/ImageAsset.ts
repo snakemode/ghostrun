@@ -1,4 +1,3 @@
-import SuperGif from "../animation/libgif";
 import { ImageLoader } from "../animation/ImageLoader";
 import { IDrawable } from "../behaviours/IDrawable";
 import { IInitialisable } from "../behaviours/IInitilisable";
@@ -8,7 +7,6 @@ import { EntityBase } from "./EntityBase";
 export class ImageAsset extends EntityBase implements IDrawable, IInitialisable {
 
     public filename: string;
-    public zIndex: number;
 
     private texture: HTMLImageElement;
 
