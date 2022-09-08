@@ -29,7 +29,8 @@ export class Player extends Character {
     }
 
     private processControls(game: Game) {
-        const bonusSpeed = game.controls.shift ? 2 : 0;
+        const bonusSpeed = game.controls.run ? 2 : 0;
+        const bonusHeight = game.controls.extraHeight ? 5 : 0;
 
         if (game.controls.right) {
             this.velocityX = 5 + bonusSpeed;
@@ -43,8 +44,8 @@ export class Player extends Character {
             this.velocityX = 0;
         }
 
-        if (game.controls.up && this.standingOnAPlatform(game)) {
-            this.velocityY = 20 + bonusSpeed;
+        if (game.controls.jump && this.standingOnAPlatform(game)) {
+            this.velocityY = 20 + bonusSpeed + bonusHeight;
             game.sounds.jump();
         }
     }

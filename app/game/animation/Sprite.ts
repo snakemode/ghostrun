@@ -59,10 +59,10 @@ export class Sprite implements ITickable, IInitialisable {
     }
 
     public draw(gameState, x, y, height, width, ctx) {
-        this.drawFrame(gameState, this.currentFrameId, x, y, height, width, ctx);
+        this.drawFrameNumber(gameState, this.currentFrameId, x, y, height, width, ctx);
     }
 
-    public drawFrame(gameState, frameNumber, x, y, height, width, ctx) {
+    public drawFrameNumber(gameState, frameNumber, x, y, height, width, ctx) {
         const canvasY = gameState.playfield.height - y - height;
 
         if (gameState.debug) {
