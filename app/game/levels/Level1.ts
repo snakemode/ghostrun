@@ -15,6 +15,8 @@ export class Level1 extends Level {
         this.addEntity(new GifAsset(5987, 255, "flame.gif"));
         this.addEntity(new GifAsset(5955, 275, "flame.gif"));
         this.addEntity(new GifAsset(7935, 270, "jam.gif"));
+        this.addEntity(new GifAsset(2975, 137, "sponge.gif"));
+        this.addEntity(new GifAsset(3072, 137, "sponge.gif"));
         this.addEntity(new Toast(3912, 166));
         this.addEntity(new Enemy(1000, 100));
         this.addEntity(new Enemy(2000, 600));
@@ -27,8 +29,8 @@ export class Level1 extends Level {
     }
 
     public async onStart(gameState: Game, level: Playfield) {
-        //gameState.player.teleport(7400, 0);
-        //gameState.playfield.cameraXposition = 7400;
+        //gameState.player.teleport(2850, 0);
+        //gameState.playfield.cameraXposition = 2850;
     }
     
     public async onTick(gameState: Game) {
