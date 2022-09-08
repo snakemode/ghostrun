@@ -8,6 +8,7 @@ import { loadImage } from "../animation/LoadImage";
 export class Toast extends PhysicsObject implements ITickable, IDrawable, IInitialisable {
 
     private texture: HTMLImageElement;
+    private coolOffTickCounter = 0;
 
     constructor(x: number, y: number, width: number = -1, height: number = -1) {
         super(x, y, width, height);
@@ -26,7 +27,18 @@ export class Toast extends PhysicsObject implements ITickable, IDrawable, IIniti
     }
 
     public async onTick(gameState: Game) {   
+        super.onTick(gameState);
+
+        if (this.coolOffTickCounter > 0) {
+            this.coolOffTickCounter--;
+        }
+
+        const distanceFromPlayer = Math.abs(gameState.player.x - this.x);
         
+        if (distanceFromPlayer < 100 && this.velocityY == 0 && this.coolOffTickCounter === 0) {
+            this.velocityY = 20;
+            this.coolOffTickCounter = 99;
+        }
     }
     
 
