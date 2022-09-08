@@ -112,7 +112,6 @@ export class Playfield implements ITickable {
 
     public draw(gameState: Game) {
         var drawAtX = this.distanceTravelled * -1;
-
         drawAtX = drawAtX > 0 ? 0 : drawAtX;
         drawAtX = this.atLevelEnd() ? this.levelEndOffset() * -1 : drawAtX;
 

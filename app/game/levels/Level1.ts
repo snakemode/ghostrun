@@ -2,14 +2,15 @@ import { Enemy } from "../entities/Enemy";
 import { activateWhenNearPlayer, Level } from "./Level";
 import { Playfield } from "../entities/Playfield";
 import { Game } from "../Game";
+import { GifAsset } from "../entities/GifAsset";
 
 export class Level1 extends Level {
-
     constructor() {
         super("kitchen-bg.png", "kitchen-map.png");
     }
 
-    public onStart(level: Playfield) {
+    public async onStart(level: Playfield) {
+        this.addEntity(new GifAsset(450, 114, "candle.gif"));
         this.addEntity(new Enemy(1000, 100), activateWhenNearPlayer);
         this.addEntity(new Enemy(2000, 600), activateWhenNearPlayer);
         this.addEntity(new Enemy(3700, 100), activateWhenNearPlayer);
@@ -19,7 +20,6 @@ export class Level1 extends Level {
         this.addEntity(new Enemy(7600, 100), activateWhenNearPlayer);
     }
     
-    public onTick(gameState: Game): void {
-
+    public async onTick(gameState: Game) {
     }
 }

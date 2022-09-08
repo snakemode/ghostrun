@@ -2,7 +2,7 @@ import { Game } from "../Game";
 import { ITickable } from "../behaviours/ITickable";
 import { Killable } from "../behaviours/Killable";
 import { PhysicsObject } from "./PhysicsObject";
-import { Sprite } from "../Sprite";
+import { Sprite } from "../animation/Sprite";
 import { IDrawable } from "../behaviours/IDrawable";
 
 export class Character extends PhysicsObject implements ITickable, IDrawable {

@@ -1,5 +1,5 @@
 import { Game } from "../Game";
-import { Sprite } from "../Sprite";
+import { Sprite } from "../animation/Sprite";
 import { Character } from "./Character";
 import { Killable } from "../behaviours/Killable";
 
@@ -25,6 +25,8 @@ export class Enemy extends Character {
         }
     }
 }
+
+
 
 
 
