@@ -25,8 +25,7 @@ export abstract class Level {
         this.entityRegistrations.push(entityRegistration);
     }
 
-    public tick(gameState: Game): void {
-        
+    public tick(gameState: Game): void {        
         for (const { entity, activationCondition } of this.entityRegistrations) {            
             if (activationCondition(gameState, entity) && isTickable(entity)) {
                 entity.tick(gameState);
@@ -36,8 +35,9 @@ export abstract class Level {
         this.onTick(gameState);
     }        
 
-    abstract onStart(level: Playfield): void;
-    abstract onTick(gameState: Game): void;
+    abstract onPreStart(level: Playfield): Promise<void>;
+    abstract onStart(level: Playfield): Promise<void>;
+    abstract onTick(gameState: Game): Promise<void>;
 }
 
 export type GamePlayEntity = ITickable | IDrawable;

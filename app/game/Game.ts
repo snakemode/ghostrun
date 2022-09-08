@@ -49,6 +49,7 @@ export class Game {
         
         this.controls.connect(this);
         this.sounds.backgroundMusic();
+        
         await this.loop();
     }
 

@@ -1,10 +1,11 @@
 import SuperGif from "../animation/libgif";
 import { loadImage } from "../animation/LoadImage";
 import { IDrawable } from "../behaviours/IDrawable";
+import { IInitialisable } from "../behaviours/IInitilisable";
 import { Game } from "../Game";
 import { EntityBase } from "./EntityBase";
 
-export class GifAsset extends EntityBase implements IDrawable {
+export class GifAsset extends EntityBase implements IDrawable, IInitialisable {
 
     public filename: string;
     private _image: HTMLImageElement;
@@ -15,24 +16,26 @@ export class GifAsset extends EntityBase implements IDrawable {
         this.filename = filename;    
     }
 
+    public async init() {            
+        this._image = await loadImage("/" + this.filename);    
+
+        var gif = SuperGif({ gif: this._image } );        
+        await new Promise((res, rej) => {
+            gif.load(() => {
+                res(gif);
+            });
+        });
+
+        this._gif = gif.get_canvas();
+    }
+
     public async beforeTick(gameState: Game): Promise<void> { 
-        if (!this._gif) {    
-            this._image = await loadImage("/" + this.filename);            
-            var rub = SuperGif({ gif: this._image } );
-            rub.load();
-            await sleep(250);
-            this._gif = rub.get_canvas();
-        }
     }
 
     public async tickBehaviour(gameState: Game) {
     }
     
     public draw(gameState: Game): void {
-        if (!this._gif) {
-            return;
-        }
-
         const distanceOffset = gameState.playfield.distanceTravelled > 0 
                                 ? gameState.playfield.distanceTravelled
                                 : 0;
@@ -43,7 +46,3 @@ export class GifAsset extends EntityBase implements IDrawable {
         gameState.playfield.ctx.drawImage(this._gif, drawAtX, canvasY);
     }
 }
-
-const sleep = (milliseconds: number) => {
-    return new Promise(resolve => setTimeout(resolve, milliseconds))
-};

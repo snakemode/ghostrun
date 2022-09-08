@@ -2,6 +2,7 @@ import { Game } from "../Game";
 import { isDrawable } from "../behaviours/IDrawable";
 import { ITickable } from "../behaviours/ITickable";
 import { Level } from "../levels/Level";
+import { isInitialisable } from "../behaviours/IInitilisable";
 
 export class Playfield implements ITickable {
     public width = 640;
@@ -53,7 +54,15 @@ export class Playfield implements ITickable {
         this.collisionMap = hiddenCanvas.getContext("2d");
         this.collisionMap.drawImage(image, 0, 0);
 
-        level.onStart(this);
+        await level.onPreStart(this);
+
+        for (const entity of level.entities) {
+            if (isInitialisable(entity)) {
+                await entity.init();
+            }
+        }
+
+        await level.onStart(this);
     }
 
     public async tick(gameState: Game) {
@@ -75,7 +84,6 @@ export class Playfield implements ITickable {
     public isSolidSurface(x: number, y: number) { return this.getPixelType(x, y) == "#"; }
     public isPit(x: number, y: number) { return this.getPixelType(x, y) == "pit"; }
     public isGoal(x: number, y: number) { return this.getPixelType(x, y) == "exit"; }
-
 
     public getPixelType(x: number, y: number) {
         if (!this.collisionMap) { 
