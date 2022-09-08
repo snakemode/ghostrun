@@ -1,15 +1,19 @@
 import { Game } from "../Game";
-import { isDrawable } from "../behaviours/IDrawable";
+import { IDrawable, isDrawable } from "../behaviours/IDrawable";
 import { ITickable } from "../behaviours/ITickable";
 import { Level } from "../levels/Level";
 import { isInitialisable } from "../behaviours/IInitilisable";
+import { loadImage } from "../animation/LoadImage";
 
-export class Playfield implements ITickable {
+export class Playfield implements ITickable, IDrawable {   
+    public x = 0;
+    public y = 0;
     public width = 640;
     public height = 480;
+
     public tickCount = 0;    
     public distanceTravelled = 0;
-
+    
     public ctx: CanvasRenderingContext2D;
     public canvas: HTMLCanvasElement;
  
@@ -33,20 +37,27 @@ export class Playfield implements ITickable {
     }
 
     public async init(level: Level) {
+        this.level = level;
         this.writeText("Loading...");
 
-        this.level = level;
+        await this.loadLevelData(level);
+
+        await level.onPreStart(this);
+        await level.initilise();
+        await level.onStart(this);
+    }
+
+    public async tick(gameState: Game) {
+        this.tickCount++;
+        this.distanceTravelled += gameState.player.velocityX;
+        this.level.tick(gameState);
+    }
+
+    private async loadLevelData(level: Level) {
         this.map = new Image();
         this.map.src = level.foregroundUrl;
         
-        const image = await new Promise<HTMLImageElement>((resolve, reject) => {
-            var collisionMapImage = new Image();
-            collisionMapImage.onload = (loadEvent: any) => {
-                resolve(loadEvent.path[0]);
-            };
-            collisionMapImage.src = level.collisionUrl;
-            this.collisionMapImage = collisionMapImage;
-        });
+        const image = await loadImage(level.collisionUrl);
 
         var hiddenCanvas = document.createElement("CANVAS") as HTMLCanvasElement;
         hiddenCanvas.setAttribute("width", image.width + "px");
@@ -54,26 +65,9 @@ export class Playfield implements ITickable {
 
         this.collisionMap = hiddenCanvas.getContext("2d");
         this.collisionMap.drawImage(image, 0, 0);
-
-        await level.onPreStart(this);
-
-        for (const entity of level.entities) {
-            if (isInitialisable(entity)) {
-                await entity.init();
-            }
-        }
-
-        await level.onStart(this);
     }
 
-    public async tick(gameState: Game) {
-        this.tickCount++;
-        this.distanceTravelled += gameState.player.velocityX;
-        
-        this.level.tick(gameState);
-    }
-
-    public getFloorBelowY(x, y) {
+    public getFloorBelowY(x: number, y: number) {
         for (var tempY = y; tempY <= this.height; tempY++) {
             if (this.isSolidSurface(x, tempY)) {
                 return tempY;
@@ -92,7 +86,6 @@ export class Playfield implements ITickable {
         }
 
         const flippedY = this.height - y;
-
         const mapData = this.collisionMap.getImageData(x, flippedY, 1, 1);
         var rawData = mapData.data;
         var mask = rawData[0] + " " + rawData[1] + " " + rawData[2] + " " + rawData[3];
@@ -116,7 +109,6 @@ export class Playfield implements ITickable {
     }
 
     public levelEndOffset() { return this.map.width - this.width; }
-
     public atLevelEnd() { return this.distanceTravelled >= this.levelEndOffset(); }
 
     public writeText(text: string) {

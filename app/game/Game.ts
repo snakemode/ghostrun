@@ -5,6 +5,8 @@ import { Playfield } from "./entities/Playfield";
 import { Level1 } from "./levels/Level1";
 import { SaveFile } from "./SaveFile";
 import { Ghost } from "./entities/Ghost";
+import { isTickable } from "./behaviours/ITickable";
+import { isDrawable } from "./behaviours/IDrawable";
 
 export class Game {
     private timer: any;
@@ -49,7 +51,7 @@ export class Game {
         
         this.controls.connect(this);
         this.sounds.backgroundMusic();
-        
+
         await this.loop();
     }
 
@@ -75,14 +77,15 @@ export class Game {
             return;
         }
 
-        await this.playfield.tick(this);
-        await this.player.tick(this);
-        this.ghosts.forEach(g => g.tick(this));
+        const entities = [
+            this.playfield,
+            this.player,
+            ...this.ghosts,
+        ]
 
-        if (this.playfield.ctx) {
-            this.playfield.draw(this);
-            this.player.draw(this);            
-            this.ghosts.forEach(g => g.draw(this));
+        for (const entity of entities) {
+            isTickable(entity) && await entity.tick(this);
+            isDrawable(entity) && entity.draw(this);
         }
 
         this.timer = window.setTimeout(async () => {
