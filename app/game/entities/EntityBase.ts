@@ -66,11 +66,16 @@ export abstract class EntityBase implements ITickable {
         x: number = this.x, 
         y: number = this.y
     ): void {
-        const distanceOffset = gameState.playfield.distanceTravelled > 0 
-                                ? gameState.playfield.distanceTravelled
-                                : 0;
+        const distanceOffset = gameState.playfield.cameraXposition > 0 
+                                ? gameState.playfield.cameraXposition
+                                : 0;                    
                                 
-        const drawAtX = (x - distanceOffset);
+        let drawAtX = (x - distanceOffset);
+
+        if (gameState.playfield.atLevelEnd()) {
+            drawAtX = (gameState.playfield.width - (gameState.playfield.map.width - gameState.playfield.cameraXposition - drawAtX));
+        }  
+
         const canvasY = gameState.playfield.height - y - image.height;
 
         gameState.playfield.ctx.drawImage(image, drawAtX, canvasY);

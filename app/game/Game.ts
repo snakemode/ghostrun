@@ -6,7 +6,7 @@ import { Level1 } from "./levels/Level1";
 import { SaveFile } from "./SaveFile";
 import { Ghost } from "./entities/Ghost";
 import { isTickable } from "./behaviours/ITickable";
-import { isDrawable } from "./behaviours/IDrawable";
+import { IDrawable, isDrawable } from "./behaviours/IDrawable";
 
 export class Game {
     private timer: any;
@@ -80,15 +80,23 @@ export class Game {
             this.stop({ reason: "dead" });
         }
 
-        const entities = [
+        this.playfield.tick(this);
+        this.player.tick(this);
+        this.ghosts.forEach(x => x.tick(this));
+
+        let potentialDrawables = [
             this.playfield,
             this.player,
             ...this.ghosts,
-        ]
+            ...this.playfield.level.entities
+        ].filter(x => isDrawable(x));
+        
+        const orderedDrawables 
+            = potentialDrawables.map<IDrawable>(x => x as IDrawable)
+                                .sort((a, b) => a.zIndex - b.zIndex);
 
-        for (const entity of entities) {
-            isTickable(entity) && await entity.tick(this);
-            isDrawable(entity) && entity.draw(this);
+        for (const entity of orderedDrawables) {
+            entity.draw(this);
         }
 
         this.timer = window.setTimeout(async () => {

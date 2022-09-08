@@ -11,6 +11,11 @@ export class Player extends Character {
         this.saveFile = new SaveFile();
     }
 
+    public teleport(x: number, y: number) {
+        this.x = x;
+        this.y = y;
+    }
+
     public async onTick(gameState: Game) {
         if (gameState.playfield.isGoal(this.center.x, this.center.y) && this.standingOnAPlatform(gameState)) {
             gameState.stop({ reason: "completed" });

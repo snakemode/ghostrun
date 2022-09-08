@@ -1,5 +1,5 @@
 import { Enemy } from "../entities/Enemy";
-import { activateWhenNearPlayer, Level } from "./Level";
+import { Level } from "./Level";
 import { Playfield } from "../entities/Playfield";
 import { Game } from "../Game";
 import { GifAsset } from "../entities/GifAsset";
@@ -11,10 +11,10 @@ export class Level1 extends Level {
     }
 
     public async onPreStart(level: Playfield) {
-        this.addEntity(new GifAsset(450, 114, "candle.gif"));
         this.addEntity(new GifAsset(5921, 255, "flame.gif"));
         this.addEntity(new GifAsset(5987, 255, "flame.gif"));
         this.addEntity(new GifAsset(5955, 275, "flame.gif"));
+        this.addEntity(new GifAsset(7935, 270, "jam.gif"));
         this.addEntity(new Toast(3912, 166));
         this.addEntity(new Enemy(1000, 100));
         this.addEntity(new Enemy(2000, 600));
@@ -23,9 +23,12 @@ export class Level1 extends Level {
         this.addEntity(new Enemy(5600, 100));
         this.addEntity(new Enemy(6500, 100));
         this.addEntity(new Enemy(7600, 100));
+        this.addEntity(new GifAsset(590, 150, "candle.gif", 10));
     }
 
-    public async onStart(level: Playfield) {
+    public async onStart(gameState: Game, level: Playfield) {
+        //gameState.player.teleport(7400, 0);
+        //gameState.playfield.cameraXposition = 7400;
     }
     
     public async onTick(gameState: Game) {

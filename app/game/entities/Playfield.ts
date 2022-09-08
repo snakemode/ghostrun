@@ -12,7 +12,7 @@ export class Playfield implements ITickable, IDrawable {
     public height = 480;
 
     public tickCount = 0;    
-    public distanceTravelled = 0;
+    public cameraXposition = 0;
     
     public ctx: CanvasRenderingContext2D;
     public canvas: HTMLCanvasElement;
@@ -21,7 +21,7 @@ export class Playfield implements ITickable, IDrawable {
     public collisionMap: CanvasRenderingContext2D;
     private collisionMapImage: HTMLImageElement;
 
-    private level: Level;
+    public level: Level;
     private parent: Game;
 
     constructor(gameState: Game, width = 640, height = 480) {
@@ -38,7 +38,7 @@ export class Playfield implements ITickable, IDrawable {
 
     public async init(level: Level = this.level) {
         this.level = level;
-        this.distanceTravelled = 0;
+        this.cameraXposition = 0;
         this.tickCount = 0;
         
         this.writeText("Loading...");
@@ -47,12 +47,15 @@ export class Playfield implements ITickable, IDrawable {
 
         await debugTimer("onPreStart",  async () => await level.onPreStart(this));
         await debugTimer("initilise",   async () => await level.initilise());
-        await debugTimer("onStart",     async () => await level.onStart(this));
     }
 
     public async tick(gameState: Game) {
+        if (this.tickCount === 0) {
+            await debugTimer("onStart", async () => await this.level.onStart(gameState, this));
+        }
+
         this.tickCount++;
-        this.distanceTravelled += gameState.player.velocityX;
+        this.cameraXposition += gameState.player.velocityX;
         this.level.tick(gameState);
     }
 
@@ -112,7 +115,7 @@ export class Playfield implements ITickable, IDrawable {
     }
 
     public levelEndOffset() { return this.map.width - this.width; }
-    public atLevelEnd() { return this.distanceTravelled >= this.levelEndOffset(); }
+    public atLevelEnd() { return this.cameraXposition >= this.levelEndOffset(); }
 
     public writeText(text: string) {
         this.ctx.font = "30px Arial";
@@ -121,18 +124,12 @@ export class Playfield implements ITickable, IDrawable {
     }
 
     public draw(gameState: Game) {
-        var drawAtX = this.distanceTravelled * -1;
+        var drawAtX = this.cameraXposition * -1;
         drawAtX = drawAtX > 0 ? 0 : drawAtX;
         drawAtX = this.atLevelEnd() ? this.levelEndOffset() * -1 : drawAtX;
 
         const visual = this.parent.debug ? this.collisionMapImage : this.map;
 
         this.ctx.drawImage(visual, drawAtX, 0);
-
-        for (const entity of this.level.entities) {
-            if (isDrawable(entity)) {
-                entity.draw(gameState);
-            }
-        }
     }
 }

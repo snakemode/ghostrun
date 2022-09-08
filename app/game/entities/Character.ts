@@ -37,11 +37,11 @@ export class Character extends PhysicsObject implements ITickable, IDrawable, II
             return; 
         }
 
-        var screenX = this.x - gameState.playfield.distanceTravelled;
+        var screenX = this.x - gameState.playfield.cameraXposition;
         screenX = screenX > this.x ? this.x : screenX;
 
         if (gameState.playfield.atLevelEnd()) {
-            screenX = (gameState.playfield.width - (gameState.playfield.map.width - gameState.playfield.distanceTravelled - (this.x - gameState.playfield.distanceTravelled)));
+            screenX = (gameState.playfield.width - (gameState.playfield.map.width - gameState.playfield.cameraXposition - (this.x - gameState.playfield.cameraXposition)));
         }
 
         if (this.isJumping || this.isFalling) {      

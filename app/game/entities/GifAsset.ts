@@ -8,13 +8,16 @@ import { EntityBase } from "./EntityBase";
 export class GifAsset extends EntityBase implements IDrawable, IInitialisable {
 
     public filename: string;
+    public zIndex: number;
+
     private _gif: HTMLCanvasElement;
 
     private static GifCache = new Map<string, HTMLCanvasElement>();
 
-    constructor(x: number, y: number, filename: string) {
-        super(x, y, 25, 20);
-        this.filename = filename;    
+    constructor(x: number, y: number, filename: string, zIndex: number = 0) {
+        super(x, y, 0, 0);
+        this.filename = filename;   
+        this.zIndex = zIndex; 
     }
 
     public async init() {         
@@ -32,6 +35,9 @@ export class GifAsset extends EntityBase implements IDrawable, IInitialisable {
         });
 
         this._gif = gif.get_canvas();
+
+        this.width = this._gif.width;
+        this.height = this._gif.height;
 
         GifAsset.GifCache.set(this.filename, this._gif);        
     }

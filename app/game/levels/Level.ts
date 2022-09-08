@@ -18,7 +18,7 @@ export abstract class Level {
     }
 
     abstract onPreStart(level: Playfield): Promise<void>;
-    abstract onStart(level: Playfield): Promise<void>;
+    abstract onStart(gameState: Game, level: Playfield): Promise<void>;
     abstract onTick(gameState: Game): Promise<void>;
 
     public async initilise() {        
@@ -62,6 +62,6 @@ export function alwaysActivate(gameState: Game, entity: GamePlayEntity) {
 
 export function activateWhenNearPlayer(gameState: Game, entity: GamePlayEntity): boolean {
     return isDrawable(entity) 
-            ? entity.x < gameState.playfield.distanceTravelled + gameState.playfield.width 
+            ? entity.x < gameState.playfield.cameraXposition + gameState.playfield.width 
             : alwaysActivate(gameState, entity);
 }
