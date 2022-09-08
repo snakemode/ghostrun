@@ -7,16 +7,24 @@ import { IDrawable } from "../behaviours/IDrawable";
 
 export class Character extends PhysicsObject implements ITickable, IDrawable {
 
-    runningSprite: Sprite;
-    runningSpriteReversed: Sprite;
+    private runningSprite: Sprite;
+    private get currentSprite() { return this.runningSprite; }
 
-    constructor(x: number, y: number, width: number, height: number, runningSprite: Sprite, reverseSprite: Sprite) {
+    constructor(x: number, y: number, width: number, height: number, runningSprite: Sprite) {
         super(x, y, width, height);
-
         this.addBehaviour(Killable.name, new Killable(this));
-
         this.runningSprite = runningSprite;
-        this.runningSpriteReversed = reverseSprite;
+    }
+
+    public async onTick(gameState: Game) {
+        super.onTick(gameState);        
+        this.currentSprite.tick(gameState);
+
+        if (this.velocityX < 0) {
+            this.runningSprite.setDirection("left");
+        } else if (this.velocityX > 0) {
+            this.runningSprite.setDirection("right");
+        }
     }
 
     public draw(gameState: Game) {
@@ -31,14 +39,12 @@ export class Character extends PhysicsObject implements ITickable, IDrawable {
             screenX = (gameState.playfield.width - (gameState.playfield.map.width - gameState.playfield.distanceTravelled - (this.x - gameState.playfield.distanceTravelled)));
         }
 
-        var sprite = this.velocityX < 0 ? this.runningSpriteReversed : this.runningSprite;
-
-        if (this.isJumping || this.isFalling) {
-            sprite.drawFrame(gameState, 4, screenX, this.y, this.height, this.width, gameState.playfield.ctx);
+        if (this.isJumping || this.isFalling) {      
+            this.currentSprite.drawFrame(gameState, 4, screenX, this.y, this.height, this.width, gameState.playfield.ctx);
         } else if (this.isMoving) {
-            sprite.draw(gameState, gameState.playfield.tickCount, screenX, this.y, this.height, this.width, gameState.playfield.ctx);
+            this.currentSprite.draw(gameState, screenX, this.y, this.height, this.width, gameState.playfield.ctx);
         } else {
-            sprite.drawFrame(gameState, 1, screenX, this.y, this.height, this.width, gameState.playfield.ctx);
+            this.currentSprite.drawFrame(gameState, 1, screenX, this.y, this.height, this.width, gameState.playfield.ctx);
         }
     }
 

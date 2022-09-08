@@ -5,7 +5,7 @@ import { Killable } from "../behaviours/Killable";
 
 export class Enemy extends Character {
     constructor(x: number, y: number) {
-        super(x, y, 25, 20, new Sprite("graphics/enemy", 4), new Sprite("graphics/enemy", 4));
+        super(x, y, 25, 20, new Sprite("graphics/enemy", 4));
     }
 
     public async onTick(gameState: Game) {

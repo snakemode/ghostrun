@@ -8,7 +8,7 @@ export class Ghost extends Character {
     
     constructor(saveFile: SaveFile) {        
         const { x, y } = saveFile.recording[0];
-        super(x, y, 25, 25, new Sprite("graphics/slime", 4), new Sprite("graphics/slime", 4));
+        super(x, y, 25, 25, new Sprite("graphics/slime", 4));
         
         this.clearBehaviours();
         this.saveFile = saveFile;
