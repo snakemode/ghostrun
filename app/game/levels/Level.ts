@@ -29,7 +29,7 @@ export abstract class Level {
         }
     }
 
-    protected addEntity(entity: GamePlayEntity, activationCondition: EntityActivationCallback = alwaysActivate) {
+    protected addEntity(entity: GamePlayEntity, activationCondition: EntityActivationCallback = activateWhenNearPlayer) {
         const entityRegistration = {
             entity: entity,
             activationCondition: activationCondition
