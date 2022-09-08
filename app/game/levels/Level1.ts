@@ -12,6 +12,9 @@ export class Level1 extends Level {
 
     public async onPreStart(level: Playfield) {
         this.addEntity(new GifAsset(450, 114, "candle.gif"), activateWhenNearPlayer);
+        this.addEntity(new GifAsset(5921, 255, "flame.gif"), activateWhenNearPlayer);
+        this.addEntity(new GifAsset(5987, 255, "flame.gif"), activateWhenNearPlayer);
+        this.addEntity(new GifAsset(5955, 275, "flame.gif"), activateWhenNearPlayer);
         this.addEntity(new Toast(3912, 166), activateWhenNearPlayer);
         this.addEntity(new Enemy(1000, 100), activateWhenNearPlayer);
         this.addEntity(new Enemy(2000, 600), activateWhenNearPlayer);
