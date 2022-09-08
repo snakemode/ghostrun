@@ -4,18 +4,25 @@ import { PhysicsObject } from "./PhysicsObject";
 import { IDrawable } from "../behaviours/IDrawable";
 import { IInitialisable } from "../behaviours/IInitilisable";
 import { loadImage } from "../animation/LoadImage";
+import { Killable } from "../behaviours/Killable";
 
 export class Toast extends PhysicsObject implements ITickable, IDrawable, IInitialisable {
-
     private texture: HTMLImageElement;
+    private toasterFront: HTMLImageElement;
     private coolOffTickCounter = 0;
+    
+    private initialX: number;
+    private initialY: number;
 
     constructor(x: number, y: number, width: number = -1, height: number = -1) {
         super(x, y, width, height);
+        this.initialX = x;
+        this.initialY = y;
     }
 
     public async init(): Promise<void> {
         this.texture = await loadImage("/toast.1.png");
+        this.toasterFront = await loadImage("/toast.resting.png");
 
         if (this.width === -1) {
             this.width = this.texture.width;
@@ -36,13 +43,19 @@ export class Toast extends PhysicsObject implements ITickable, IDrawable, IIniti
         const distanceFromPlayer = Math.abs(gameState.player.x - this.x);
         
         if (distanceFromPlayer < 100 && this.velocityY == 0 && this.coolOffTickCounter === 0) {
-            this.velocityY = 20;
+            this.velocityY = 30;
             this.coolOffTickCounter = 99;
         }
-    }
-    
+
+        if (this.collidesWith(gameState.player)) {
+            gameState.player.hasBehaviour(Killable.name, (killable: Killable) => {
+                killable.kill(this);
+            });
+        }
+    }    
 
     public draw(gameState: Game) {
         this.drawImage(gameState, this.texture);
+        this.drawImage(gameState, this.toasterFront, this.initialX, this.initialY);
     }
 }

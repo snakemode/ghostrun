@@ -48,7 +48,7 @@ export class PhysicsObject extends EntityBase {
         this.y = Math.floor(nextY);
     }
 
-    private ensureFloorBoundaries(gameState: Game, nextX: number, nextY: number) {       
+    private ensureFloorBoundaries(gameState: Game, nextX: number, nextY: number) {            
         let collides = 
             gameState.playfield.isSolidSurface(nextX, nextY) 
             || gameState.playfield.isSolidSurface(nextX + (this.width / 2), nextY)

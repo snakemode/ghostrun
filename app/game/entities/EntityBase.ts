@@ -60,13 +60,13 @@ export abstract class EntityBase implements ITickable {
         }
     }
 
-    protected drawImage(gameState: Game, image: HTMLImageElement | HTMLCanvasElement): void {
+    protected drawImage(gameState: Game, image: HTMLImageElement | HTMLCanvasElement, x: number = this.x, y: number = this.y): void {
         const distanceOffset = gameState.playfield.distanceTravelled > 0 
                                 ? gameState.playfield.distanceTravelled
                                 : 0;
                                 
-        const drawAtX = (this.x - distanceOffset);
-        const canvasY = gameState.playfield.height - this.y - image.height;
+        const drawAtX = (x - distanceOffset);
+        const canvasY = gameState.playfield.height - y - image.height;
 
         gameState.playfield.ctx.drawImage(image, drawAtX, canvasY);
     }
