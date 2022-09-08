@@ -33,8 +33,9 @@ export class Playfield implements ITickable {
     }
 
     public async init(level: Level) {
-        this.level = level;
+        this.writeText("Loading...");
 
+        this.level = level;
         this.map = new Image();
         this.map.src = level.foregroundUrl;
         
@@ -117,6 +118,12 @@ export class Playfield implements ITickable {
     public levelEndOffset() { return this.map.width - this.width; }
 
     public atLevelEnd() { return this.distanceTravelled >= this.levelEndOffset(); }
+
+    public writeText(text: string) {
+        this.ctx.font = "30px Arial";
+        this.ctx.fillStyle = "black";
+        this.ctx.fillText(text, 10, 50);
+    }
 
     public draw(gameState: Game) {
         var drawAtX = this.distanceTravelled * -1;
