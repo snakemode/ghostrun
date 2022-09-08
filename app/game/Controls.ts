@@ -7,8 +7,18 @@ export class Controls {
     public right: boolean;
     public jump: boolean;
     public run: boolean;
+    public start: boolean;
 
-    private mapping = { 65: "left", 68: "right", 87: "extraHeight", 83: "down", 16: "run", 32: "jump" };
+    private mapping = { 
+        65: "left", 
+        68: "right", 
+        87: "extraHeight", 
+        83: "down", 
+        16: "run", 
+        32: "jump",
+        13: "start",
+        27: "start"
+    };
 
     private gamepadPollingInterval: any;
 
@@ -30,6 +40,7 @@ export class Controls {
                 this.right = pad.buttons[15].pressed;
                 this.run = pad.buttons[2].pressed;
                 this.jump = pad.buttons[0].pressed;
+                this.start = pad.buttons[8].pressed || pad.buttons[9].pressed
             }
         }, 16);
     }
@@ -56,5 +67,11 @@ export class Controls {
             console.log("Gamepad disconnected from index %d: %s", e.gamepad.index, e.gamepad.id);
             clearInterval(this.gamepadPollingInterval);
         });
+
+        setInterval(() => {
+            if (this.start && !game.player.isAlive) {
+                game.start();
+            }
+        }, 16);
     }
 }

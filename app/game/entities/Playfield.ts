@@ -36,8 +36,11 @@ export class Playfield implements ITickable, IDrawable {
         this.ctx = this.canvas.getContext("2d");
     }
 
-    public async init(level: Level) {
+    public async init(level: Level = this.level) {
         this.level = level;
+        this.distanceTravelled = 0;
+        this.tickCount = 0;
+        
         this.writeText("Loading...");
 
         await this.loadLevelData(level);

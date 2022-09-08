@@ -33,6 +33,7 @@ export class Game {
         this.ghosts = [];
 
         this.gameEndCallback = (_, __) => {};
+        this.controls.connect(this);
     }
 
     public addGhost(save: SaveFile) {
@@ -53,7 +54,6 @@ export class Game {
             await ghost.init();
         }
         
-        this.controls.connect(this);
         this.sounds.backgroundMusic();
 
         await this.loop();
@@ -72,13 +72,12 @@ export class Game {
     } 
 
     public async loop() {
-        if (!this.player.isAlive) {
-            this.stop({ reason: "dead" });
+        if (this.finished) {
             return;
         }
 
-        if (this.finished) {
-            return;
+        if (!this.player.isAlive) {
+            this.stop({ reason: "dead" });
         }
 
         const entities = [

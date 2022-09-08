@@ -87,7 +87,7 @@ export class PhysicsObject extends EntityBase {
             if (this.standingOnAPlatform(gameState)) {
                 this.velocityY = 0;
             } else {
-                this.velocityY = this.gravityDistancePerTick;
+                this.velocityY += this.gravityDistancePerTick / 6;
             }
         }
     }

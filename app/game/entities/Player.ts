@@ -44,6 +44,15 @@ export class Player extends Character {
             this.velocityX = 0;
         }
 
+        if (game.controls.down) {
+            this.velocityY += -5;
+        }
+
+        if (game.controls.start && this.isAlive) {
+            // pause
+            console.log("pause");
+        }
+
         if (game.controls.jump && this.standingOnAPlatform(game)) {
             this.velocityY = 20 + bonusSpeed + bonusHeight;
             game.sounds.jump();
