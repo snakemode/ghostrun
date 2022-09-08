@@ -9,7 +9,7 @@ export class Level1 extends Level {
         super("kitchen-bg.png", "kitchen-map.png");
     }
 
-    public async onPreStart(level: Playfield) {        
+    public async onPreStart(level: Playfield) {
         this.addEntity(new GifAsset(450, 114, "candle.gif"), activateWhenNearPlayer);
         this.addEntity(new Enemy(1000, 100), activateWhenNearPlayer);
         this.addEntity(new Enemy(2000, 600), activateWhenNearPlayer);

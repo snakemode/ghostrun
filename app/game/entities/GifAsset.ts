@@ -8,18 +8,23 @@ import { EntityBase } from "./EntityBase";
 export class GifAsset extends EntityBase implements IDrawable, IInitialisable {
 
     public filename: string;
-    private _image: HTMLImageElement;
     private _gif: HTMLCanvasElement;
+
+    private static GifCache = new Map<string, HTMLCanvasElement>();
 
     constructor(x: number, y: number, filename: string) {
         super(x, y, 25, 20);
         this.filename = filename;    
     }
 
-    public async init() {            
-        this._image = await loadImage("/" + this.filename);    
+    public async init() {         
+        if (GifAsset.GifCache.has(this.filename)) {
+            this._gif = GifAsset.GifCache.get(this.filename);
+            return;
+        }
 
-        var gif = SuperGif({ gif: this._image } );        
+        const image = await loadImage("/" + this.filename);  
+        var gif = SuperGif({ gif: image } );        
         await new Promise((res, rej) => {
             gif.load(() => {
                 res(gif);
@@ -27,6 +32,8 @@ export class GifAsset extends EntityBase implements IDrawable, IInitialisable {
         });
 
         this._gif = gif.get_canvas();
+
+        GifAsset.GifCache.set(this.filename, this._gif);        
     }
 
     public async beforeTick(gameState: Game): Promise<void> { 
@@ -41,7 +48,7 @@ export class GifAsset extends EntityBase implements IDrawable, IInitialisable {
                                 : 0;
                                 
         const drawAtX = (this.x - distanceOffset);
-        const canvasY = gameState.playfield.height - this.y - this._image.height;
+        const canvasY = gameState.playfield.height - this.y - this._gif.height;
 
         gameState.playfield.ctx.drawImage(this._gif, drawAtX, canvasY);
     }

@@ -2,8 +2,8 @@ import { Game } from "../Game";
 import { IDrawable, isDrawable } from "../behaviours/IDrawable";
 import { ITickable } from "../behaviours/ITickable";
 import { Level } from "../levels/Level";
-import { isInitialisable } from "../behaviours/IInitilisable";
 import { loadImage } from "../animation/LoadImage";
+import { debugTimer } from "../metrics/debugTimer";
 
 export class Playfield implements ITickable, IDrawable {   
     public x = 0;
@@ -42,9 +42,9 @@ export class Playfield implements ITickable, IDrawable {
 
         await this.loadLevelData(level);
 
-        await level.onPreStart(this);
-        await level.initilise();
-        await level.onStart(this);
+        await debugTimer("onPreStart",  async () => await level.onPreStart(this));
+        await debugTimer("initilise",   async () => await level.initilise());
+        await debugTimer("onStart",     async () => await level.onStart(this));
     }
 
     public async tick(gameState: Game) {
@@ -57,7 +57,7 @@ export class Playfield implements ITickable, IDrawable {
         this.map = new Image();
         this.map.src = level.foregroundUrl;
         
-        const image = await loadImage(level.collisionUrl);
+        const image = this.collisionMapImage = await loadImage(level.collisionUrl);
 
         var hiddenCanvas = document.createElement("CANVAS") as HTMLCanvasElement;
         hiddenCanvas.setAttribute("width", image.width + "px");
