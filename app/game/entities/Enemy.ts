@@ -8,8 +8,8 @@ export class Enemy extends Character {
         super(x, y, 25, 20, new Sprite("graphics/enemy", 4), new Sprite("graphics/enemy", 4));
     }
 
-    public async tickBehaviour(gameState: Game) {
-        super.tickBehaviour(gameState);
+    public async onTick(gameState: Game) {
+        super.onTick(gameState);
         
         this.velocityX = 2;
 

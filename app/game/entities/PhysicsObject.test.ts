@@ -10,7 +10,7 @@ describe("PhysicsObject", () => {
 
         const physicsObject = new PhysicsObject(0, 0, 100, 100, 1, 0);
 
-        physicsObject.tickBehaviour({ playfield } as any);
+        physicsObject.onTick({ playfield } as any);
 
         expect(physicsObject.x).toBe(1);
         expect(physicsObject.y).toBe(0);
@@ -29,7 +29,7 @@ describe("PhysicsObject", () => {
 
         const physicsObject = new PhysicsObject(0, 0, 100, 100, 50, 0);
 
-        physicsObject.tickBehaviour({ playfield } as any);
+        physicsObject.onTick({ playfield } as any);
 
         expect(physicsObject.x).toBe(0);
         expect(physicsObject.y).toBe(0);
@@ -48,7 +48,7 @@ describe("PhysicsObject", () => {
 
         const physicsObject = new PhysicsObject(0, 1, 100, 100, 0, 0);
 
-        physicsObject.tickBehaviour({ playfield } as any);
+        physicsObject.onTick({ playfield } as any);
 
         expect(physicsObject.x).toBe(0);
         expect(physicsObject.y).toBe(0);
@@ -72,7 +72,7 @@ describe("PhysicsObject", () => {
         physicsObject.velocityX = 0;
         physicsObject.velocityY = 50;
 
-        physicsObject.tickBehaviour({ playfield } as any);
+        physicsObject.onTick({ playfield } as any);
 
         expect(physicsObject.x).toBe(0);
         expect(physicsObject.y).toBe(48);

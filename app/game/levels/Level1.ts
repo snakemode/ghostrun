@@ -3,6 +3,7 @@ import { activateWhenNearPlayer, Level } from "./Level";
 import { Playfield } from "../entities/Playfield";
 import { Game } from "../Game";
 import { GifAsset } from "../entities/GifAsset";
+import { Toast } from "../entities/Toast";
 
 export class Level1 extends Level {
     constructor() {
@@ -11,6 +12,7 @@ export class Level1 extends Level {
 
     public async onPreStart(level: Playfield) {
         this.addEntity(new GifAsset(450, 114, "candle.gif"), activateWhenNearPlayer);
+        this.addEntity(new Toast(650, 160), activateWhenNearPlayer);
         this.addEntity(new Enemy(1000, 100), activateWhenNearPlayer);
         this.addEntity(new Enemy(2000, 600), activateWhenNearPlayer);
         this.addEntity(new Enemy(3700, 100), activateWhenNearPlayer);

@@ -1,7 +1,8 @@
 import { Game } from "../Game";
 import { IBehaviour } from "../behaviours/IBehaviour";
+import { ITickable } from "../behaviours/ITickable";
 
-export abstract class EntityBase {
+export abstract class EntityBase implements ITickable {
     public id: string;
     public x: number;
     public y: number;
@@ -35,12 +36,11 @@ export abstract class EntityBase {
             }
         }
 
-        this.tickBehaviour(gameState);
+        this.onTick(gameState);
     }
 
-
     abstract beforeTick(gameState: Game): Promise<void>;
-    abstract tickBehaviour(gameState: Game): Promise<void | CallableFunction | false>;
+    abstract onTick(gameState: Game): Promise<void | CallableFunction | false>;
 
     protected clearBehaviours() {
         this.behaviours.clear();
@@ -58,5 +58,16 @@ export abstract class EntityBase {
         if (this.behaviours.has(key)) {
             callback(this.behaviours.get(key));
         }
+    }
+
+    protected drawImage(gameState: Game, image: HTMLImageElement | HTMLCanvasElement): void {
+        const distanceOffset = gameState.playfield.distanceTravelled > 0 
+                                ? gameState.playfield.distanceTravelled
+                                : 0;
+                                
+        const drawAtX = (this.x - distanceOffset);
+        const canvasY = gameState.playfield.height - this.y - image.height;
+
+        gameState.playfield.ctx.drawImage(image, drawAtX, canvasY);
     }
 }

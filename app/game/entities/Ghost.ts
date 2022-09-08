@@ -14,7 +14,7 @@ export class Ghost extends Character {
         this.saveFile = saveFile;
     }
 
-    public async tickBehaviour(gameState: Game) {   
+    public async onTick(gameState: Game) {   
         if (this.saveFile.recording.length > 0) {
             const { x, y } = this.saveFile.recording.shift();
             this.x = x;

@@ -39,17 +39,10 @@ export class GifAsset extends EntityBase implements IDrawable, IInitialisable {
     public async beforeTick(gameState: Game): Promise<void> { 
     }
 
-    public async tickBehaviour(gameState: Game) {
+    public async onTick(gameState: Game) {
     }
     
     public draw(gameState: Game): void {
-        const distanceOffset = gameState.playfield.distanceTravelled > 0 
-                                ? gameState.playfield.distanceTravelled
-                                : 0;
-                                
-        const drawAtX = (this.x - distanceOffset);
-        const canvasY = gameState.playfield.height - this.y - this._gif.height;
-
-        gameState.playfield.ctx.drawImage(this._gif, drawAtX, canvasY);
+        this.drawImage(gameState, this._gif);
     }
 }

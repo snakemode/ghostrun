@@ -11,7 +11,7 @@ export class Player extends Character {
         this.saveFile = new SaveFile();
     }
 
-    public async tickBehaviour(gameState: Game) {
+    public async onTick(gameState: Game) {
         if (gameState.playfield.isGoal(this.center.x, this.center.y) && this.standingOnAPlatform(gameState)) {
             gameState.stop({ reason: "completed" });
             return;
@@ -23,7 +23,7 @@ export class Player extends Character {
         }
 
         this.processControls(gameState);
-        super.tickBehaviour(gameState);
+        super.onTick(gameState);
 
         this.saveFile.push(this.x, this.y);
     }

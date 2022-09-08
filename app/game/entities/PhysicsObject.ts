@@ -21,7 +21,7 @@ export class PhysicsObject extends EntityBase {
     public async beforeTick(gameState: Game): Promise<void> {
     }
 
-    public async tickBehaviour(gameState: Game) {
+    public async onTick(gameState: Game) {
         this.applyGravity(gameState);
         this.applyMovement(gameState);
     }
