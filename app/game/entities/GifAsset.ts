@@ -1,5 +1,5 @@
 import SuperGif from "../animation/libgif";
-import { loadImage } from "../animation/LoadImage";
+import { ImageLoader } from "../animation/ImageLoader";
 import { IDrawable } from "../behaviours/IDrawable";
 import { IInitialisable } from "../behaviours/IInitilisable";
 import { Game } from "../Game";
@@ -23,7 +23,7 @@ export class GifAsset extends EntityBase implements IDrawable, IInitialisable {
             return;
         }
 
-        const image = await loadImage("/" + this.filename);  
+        const image = await ImageLoader.load("/" + this.filename);  
         var gif = SuperGif({ gif: image } );        
         await new Promise((res, rej) => {
             gif.load(() => {

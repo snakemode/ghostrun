@@ -46,8 +46,12 @@ export class Game {
         }
 
         this.player = new Player();
-
+        
+        await this.player.init();
         await this.playfield.init(new Level1());
+        for (const ghost of this.ghosts) {
+            await ghost.init();
+        }
         
         this.controls.connect(this);
         this.sounds.backgroundMusic();

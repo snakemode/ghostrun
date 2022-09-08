@@ -1,26 +1,33 @@
+import { IInitialisable } from "../behaviours/IInitilisable";
 import { ITickable } from "../behaviours/ITickable";
 import { Game } from "../Game";
+import { ImageLoader } from "./ImageLoader";
 
 export type Direction = "left" | "right";
 
-export class Sprite implements ITickable {
+export class Sprite implements ITickable, IInitialisable {
+    private filePattern: string;
+    private frameCount: number;
+
     private frames: any[];
-    private currentFrameId: number;
     private facing: "left" | "right";
+    private currentFrameId: number;
 
     public get firstFrame() { return this.frames[1]; }
     public get currentFrame() { return this.frames[this.currentFrameId]; }
     public get lastFrame() { return this.frames[this.frames.length - 1]; }
 
-    constructor(filename: string, frameCount: number) {
+    constructor(filePattern: string, frameCount: number) {
+        this.filePattern = filePattern;
+        this.frameCount = frameCount
         this.frames = [];
         this.currentFrameId = 1;
         this.facing = "right";
-
-        for (var frameId = 1; frameId <= frameCount; frameId++) {
-            var frame = new Image();
-            frame.src = filename + "." + frameId + ".png";
-            this.frames[frameId] = frame;
+    }
+    
+    public async init() {
+        for (var frameId = 1; frameId <= this.frameCount; frameId++) {
+            this.frames[frameId] = await ImageLoader.load(this.filePattern + "." + frameId + ".png");
         }
     }
     

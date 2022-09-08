@@ -2,8 +2,8 @@ import { Game } from "../Game";
 import { IDrawable, isDrawable } from "../behaviours/IDrawable";
 import { ITickable } from "../behaviours/ITickable";
 import { Level } from "../levels/Level";
-import { loadImage } from "../animation/LoadImage";
 import { debugTimer } from "../metrics/debugTimer";
+import { ImageLoader } from "../animation/ImageLoader";
 
 export class Playfield implements ITickable, IDrawable {   
     public x = 0;
@@ -57,7 +57,7 @@ export class Playfield implements ITickable, IDrawable {
         this.map = new Image();
         this.map.src = level.foregroundUrl;
         
-        const image = this.collisionMapImage = await loadImage(level.collisionUrl);
+        const image = this.collisionMapImage = await ImageLoader.load(level.collisionUrl);
 
         var hiddenCanvas = document.createElement("CANVAS") as HTMLCanvasElement;
         hiddenCanvas.setAttribute("width", image.width + "px");

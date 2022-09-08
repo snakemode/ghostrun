@@ -4,8 +4,9 @@ import { Killable } from "../behaviours/Killable";
 import { PhysicsObject } from "./PhysicsObject";
 import { Sprite } from "../animation/Sprite";
 import { IDrawable } from "../behaviours/IDrawable";
+import { IInitialisable } from "../behaviours/IInitilisable";
 
-export class Character extends PhysicsObject implements ITickable, IDrawable {
+export class Character extends PhysicsObject implements ITickable, IDrawable, IInitialisable {
 
     private runningSprite: Sprite;
     private get currentSprite() { return this.runningSprite; }
@@ -14,6 +15,10 @@ export class Character extends PhysicsObject implements ITickable, IDrawable {
         super(x, y, width, height);
         this.addBehaviour(Killable.name, new Killable(this));
         this.runningSprite = runningSprite;
+    }
+
+    public async init() {
+        await this.runningSprite.init();
     }
 
     public async onTick(gameState: Game) {
