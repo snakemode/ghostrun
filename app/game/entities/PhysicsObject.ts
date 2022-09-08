@@ -92,9 +92,20 @@ export class PhysicsObject extends EntityBase {
         }
     }
 
-    public collidesWith(other: PhysicsObject) {
+    public collidesWith(other: PhysicsObject, aggressive: boolean = false) {
+        // check if centres collide
         if (other.center.x >= this.x && other.center.x <= this.x + this.width) {
             if (other.center.y <= this.top && other.center.y >= this.bottom) {
+                return true;
+            }
+        }
+
+        if (aggressive) {
+            // check if boxes collide 
+            if (this.x < other.x + other.width &&
+                this.x + this.width > other.x &&
+                this.y < other.y + other.height &&
+                this.height + this.y > other.y) {
                 return true;
             }
         }

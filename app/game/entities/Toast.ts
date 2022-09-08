@@ -9,6 +9,8 @@ import { Killable } from "../behaviours/Killable";
 export class Toast extends PhysicsObject implements ITickable, IDrawable, IInitialisable {
     private texture: HTMLImageElement;
     private toasterFront: HTMLImageElement;
+
+    private rattleCoolOff: number = 0;
     private coolOffTickCounter = 0;
     
     private initialX: number;
@@ -36,18 +38,22 @@ export class Toast extends PhysicsObject implements ITickable, IDrawable, IIniti
     public async onTick(gameState: Game) {   
         super.onTick(gameState);
 
-        if (this.coolOffTickCounter > 0) {
-            this.coolOffTickCounter--;
-        }
+        this.coolOffTickCounter > 0 && this.coolOffTickCounter--;
+        this.rattleCoolOff > 0 && this.rattleCoolOff--;
 
         const distanceFromPlayer = Math.abs(gameState.player.x - this.x);
         
-        if (distanceFromPlayer < 100 && this.velocityY == 0 && this.coolOffTickCounter === 0) {
-            this.velocityY = 30;
+        if (distanceFromPlayer < 300 && this.velocityY == 0 && this.rattleCoolOff === 0) {
+            this.velocityY += 5;
+            this.rattleCoolOff = 10;
+        }        
+
+        if (distanceFromPlayer < 100 && this.coolOffTickCounter === 0) {
+            this.velocityY += 30;
             this.coolOffTickCounter = 99;
         }
 
-        if (this.collidesWith(gameState.player)) {
+        if (this.collidesWith(gameState.player, true)) {
             gameState.player.hasBehaviour(Killable.name, (killable: Killable) => {
                 killable.kill(this);
             });
