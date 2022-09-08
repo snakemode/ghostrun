@@ -17,6 +17,12 @@ export class ImageLoader {
                 ImageLoader.cache.set(url, loadEvent.path[0]);    
                 resolve(loadEvent.path[0]);
             };
+
+            i.onerror = (errorEvent: any) => {
+                console.log("ImageLoader: Error loading", url);
+                reject(errorEvent);
+            };
+            
             i.src = url;
         });
     }

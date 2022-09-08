@@ -66,6 +66,11 @@ export abstract class EntityBase implements ITickable {
         x: number = this.x, 
         y: number = this.y
     ): void {
+        if (!image) {
+            console.log("Call to drawImage with null image")
+            return;
+        }
+
         const distanceOffset = gameState.playfield.cameraXposition > 0 
                                 ? gameState.playfield.cameraXposition
                                 : 0;                    

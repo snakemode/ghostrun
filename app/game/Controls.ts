@@ -42,7 +42,7 @@ export class Controls {
                 this.jump = pad.buttons[0].pressed;
                 this.start = pad.buttons[8].pressed || pad.buttons[9].pressed
             }
-        }, 16);
+        }, 33);
     }
 
     public connect(game: Game) {
@@ -72,6 +72,6 @@ export class Controls {
             if (this.start && game.finished) {
                 game.start();
             }
-        }, 16);
+        }, 33);
     }
 }
