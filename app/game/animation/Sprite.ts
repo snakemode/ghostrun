@@ -12,17 +12,19 @@ export class Sprite implements ITickable, IInitialisable {
     private frames: any[];
     private facing: "left" | "right";
     private currentFrameId: number;
+    private delay: number;
 
     public get firstFrame() { return this.frames[1]; }
     public get currentFrame() { return this.frames[this.currentFrameId]; }
     public get lastFrame() { return this.frames[this.frames.length - 1]; }
 
-    constructor(filePattern: string, frameCount: number) {
+    constructor(filePattern: string, frameCount: number, delay: number = 5) {
         this.filePattern = filePattern;
         this.frameCount = frameCount
         this.frames = [];
         this.currentFrameId = 1;
         this.facing = "right";
+        this.delay = delay;
     }
     
     public async init() {
@@ -32,7 +34,7 @@ export class Sprite implements ITickable, IInitialisable {
     }
     
     public async tick(gameState: Game){        
-        if (gameState.playfield.tickCount % 5 == 0) {
+        if (gameState.playfield.tickCount % this.delay == 0) {
             this.currentFrameId++;
         }
 
