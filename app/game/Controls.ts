@@ -17,7 +17,11 @@ export class Controls {
         16: "run", 
         32: "jump",
         13: "start",
-        27: "start"
+        27: "start",
+        38: "extraHeight",
+        40: "down",
+        37: "left",
+        39: "right",
     };
 
     private gamepadPollingInterval: any;
