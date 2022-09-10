@@ -5,20 +5,21 @@ import { Playfield } from "./entities/Playfield";
 import { Level1 } from "./levels/Level1";
 import { SaveFile } from "./SaveFile";
 import { Ghost } from "./entities/Ghost";
-import { isTickable } from "./behaviours/ITickable";
 import { IDrawable, isDrawable } from "./behaviours/IDrawable";
 
 export class Game {
-    private timer: any;
     public finished: boolean;
-    private ghosts: Ghost[];
-
     public controls: Controls;
     public sounds: Sounds;
     public playfield: Playfield;
     public player: Player;
     
     public debug: boolean;
+
+    private timer: any;
+
+    private saves: SaveFile[];
+    private ghosts: Ghost[];
 
     private gameEndCallback: ((reason: string, data: SaveFile) => void);
 
@@ -30,6 +31,7 @@ export class Game {
 
         this.playfield = new Playfield(this, width, height);
         this.player = null;
+        this.saves = [];
         this.ghosts = [];
 
         this.gameEndCallback = (_, __) => {};
@@ -37,7 +39,11 @@ export class Game {
     }
 
     public addGhost(save: SaveFile) {
-        this.ghosts.push(new Ghost(save));
+        this.saves.push(save);
+
+        if (this.saves.length > 5) {
+            this.saves.shift();
+        }
     }
 
     public async start() {
@@ -45,6 +51,8 @@ export class Game {
             this.finished = false;
             window.clearTimeout(this.timer);
         }
+
+        this.ghosts = this.saves.map(x => new Ghost(x));
 
         this.player = new Player();
         

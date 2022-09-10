@@ -4,19 +4,27 @@ import { Character } from "./Character";
 import { SaveFile } from "../SaveFile";
 
 export class Ghost extends Character {
-    private saveFile: SaveFile;
+    private recording: { x: number, y: number }[] = [];
     
-    constructor(saveFile: SaveFile) {        
-        const { x, y } = saveFile.recording[0];
-        super(x, y, 25, 25, new Sprite("graphics/slime", 4));
+    constructor(saveFile: SaveFile) {
+        let gX = 0;
+        let gY = 0;
+
+        if (saveFile?.recording?.length > 0) {     
+            const { x, y } = saveFile.recording[0];
+            gX = x;
+            gY = y;
+        }
+
+        super(gX, gY, 25, 25, new Sprite("graphics/slime", 4));
         
         this.clearBehaviours();
-        this.saveFile = saveFile;
+        this.recording = [...saveFile.recording];
     }
 
     public async onTick(gameState: Game) {   
-        if (this.saveFile.recording.length > 0) {
-            const { x, y } = this.saveFile.recording.shift();
+        if (this.recording.length > 0) {
+            const { x, y } = this.recording.shift();
             this.x = x;
             this.y = y;
         } else {
@@ -25,6 +33,6 @@ export class Ghost extends Character {
     }
 
     public get isAlive() {
-        return this.saveFile.recording.length > 0;
+        return this.recording.length > 0;
     }
 }
