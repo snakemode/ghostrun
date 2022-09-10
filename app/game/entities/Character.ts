@@ -45,11 +45,11 @@ export class Character extends PhysicsObject implements ITickable, IDrawable, II
         }
 
         if (this.isJumping || this.isFalling) {      
-            this.currentSprite.drawFrameNumber(gameState, 4, screenX, this.y, this.height, this.width, gameState.playfield.ctx);
+            this.currentSprite.drawFrameNumber(gameState, 3, screenX, this.y, this.height, this.width, gameState.playfield.ctx);
         } else if (this.isMoving) {
             this.currentSprite.draw(gameState, screenX, this.y, this.height, this.width, gameState.playfield.ctx);
         } else {
-            this.currentSprite.drawFrameNumber(gameState, 1, screenX, this.y, this.height, this.width, gameState.playfield.ctx);
+            this.currentSprite.drawFrameNumber(gameState, 0, screenX, this.y, this.height, this.width, gameState.playfield.ctx);
         }
     }
 

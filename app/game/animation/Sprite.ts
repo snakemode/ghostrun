@@ -9,8 +9,8 @@ export class Sprite implements ITickable, IInitialisable {
     private filePattern: string;
     private frameCount: number;
 
-    private frames: any[];
-    private facing: "left" | "right";
+    private frames: HTMLImageElement[];
+    private facing: Direction;
     private currentFrameId: number;
     private delay: number;
 
@@ -22,15 +22,20 @@ export class Sprite implements ITickable, IInitialisable {
         this.filePattern = filePattern;
         this.frameCount = frameCount
         this.frames = [];
-        this.currentFrameId = 1;
+        this.currentFrameId = 0;
         this.facing = "right";
         this.delay = delay;
     }
     
     public async init() {
-        for (var frameId = 1; frameId <= this.frameCount; frameId++) {
-            this.frames[frameId] = await ImageLoader.load(this.filePattern + "." + frameId + ".png");
+        for (var id = 0; id < this.frameCount; id ++) {
+            const pattern = this.filePattern + "." + (id+1) + ".png";
+
+            const cachedResource = await ImageLoader.load(pattern);
+            this.frames[id] = this.cloneImage(cachedResource);
         }
+
+        console.log("loaded all frames", this.filePattern, this.frames);
     }
     
     public async tick(gameState: Game){        
@@ -38,7 +43,7 @@ export class Sprite implements ITickable, IInitialisable {
             this.currentFrameId++;
         }
 
-        this.currentFrameId  = this.currentFrameId >= this.frames.length ? 1 : this.currentFrameId
+        this.currentFrameId = this.currentFrameId == this.frames.length ? 0 : this.currentFrameId
     }
 
     public setDirection(facing: Direction) {
@@ -46,8 +51,7 @@ export class Sprite implements ITickable, IInitialisable {
             return;
         }
 
-        this.facing = facing;
-        this.frames.forEach(frame => {
+        for (const frame of this.frames) {
             var canvas = document.createElement("canvas");
             canvas.width = frame.width;
             canvas.height = frame.height;
@@ -56,15 +60,18 @@ export class Sprite implements ITickable, IInitialisable {
             context.translate(frame.width, 0);
             context.scale(-1, 1);
             context.drawImage(frame, 0, 0);
+            
             frame.src = canvas.toDataURL();
-        });
+        }
+
+        this.facing = facing;
     }
 
     public draw(gameState, x, y, height, width, ctx) {
         this.drawFrameNumber(gameState, this.currentFrameId, x, y, height, width, ctx);
     }
 
-    public drawFrameNumber(gameState, frameNumber, x, y, height, width, ctx) {
+    public drawFrameNumber(gameState, frameId, x, y, height, width, ctx) {
         const canvasY = gameState.playfield.height - y - height;
 
         if (gameState.debug) {
@@ -75,6 +82,19 @@ export class Sprite implements ITickable, IInitialisable {
             ctx.stroke();
         }        
 
-        ctx.drawImage(this.frames[frameNumber], x, canvasY, width, height);
+        ctx.drawImage(this.frames[frameId], x, canvasY, width, height);
+    }
+
+    private cloneImage(source: HTMLImageElement) {
+        var canvas = document.createElement("canvas");
+        canvas.width = source.width;
+        canvas.height = source.height;
+        
+        var context = canvas.getContext("2d");
+        context.drawImage(source, 0, 0);
+        
+        const image = new Image();
+        image.src = canvas.toDataURL();
+        return image;
     }
 }

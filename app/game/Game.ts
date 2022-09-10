@@ -52,7 +52,7 @@ export class Game {
             window.clearTimeout(this.timer);
         }
 
-        this.ghosts = this.saves.map(x => new Ghost(x));
+        //this.ghosts = this.saves.map(x => new Ghost(x));
 
         this.player = new Player();
         
