@@ -1,25 +1,23 @@
-import { SaveFile, lzw_encode, lzw_decode } from "./game/SaveFile";
+import { SaveFile } from "./game/SaveFile";
+import { AblyGhostRepository } from "./game/ghosts/AblyGhostRepository";
 import { Game } from "./game/Game";
+import { LocalStorageGhostRepository } from "./game/ghosts/LocalStorageGhostRepository";
     
 const debugCheckbox = document.getElementById("debug") as HTMLInputElement;
 const container = document.getElementById("container") as HTMLDivElement;
 
 const game = new Game(window.innerWidth - 20, 552);
+const ghostRepository = new LocalStorageGhostRepository();
+
+ghostRepository.onGhostAdded((ghost: SaveFile) => {
+    game.addGhost(ghost);
+});
 
 game.onGameEnd((reason: string, data: SaveFile) => {
     console.log("Game ended:", reason, data);
     console.log("Recorded", data, "frames of input");
-
-    const str = JSON.stringify(data);
-    const encoded = lzw_encode(str);
-    localStorage.setItem("save", encoded);
-})
-
-if (localStorage.getItem("save")) {
-    const save = SaveFile.fromJson(lzw_decode(localStorage.getItem("save")));
-    console.log("loaded save from local storage", save);
-    game.addGhost(save);
-}
+    ghostRepository.saveGhost(data);
+});
 
 container.appendChild(game.playfield.canvas);  
 game.debug = debugCheckbox.checked ? true : false; 
