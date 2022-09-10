@@ -7,16 +7,21 @@ const debugCheckbox = document.getElementById("debug") as HTMLInputElement;
 const container = document.getElementById("container") as HTMLDivElement;
 
 const game = new Game(window.innerWidth - 20, 552);
-const ghostRepository = new LocalStorageGhostRepository();
 
-ghostRepository.onGhostAdded((ghost: SaveFile) => {
+const ghostRepo = new AblyGhostRepository();
+ghostRepo.onGhostAdded((ghost: SaveFile) => {
     game.addGhost(ghost);
 });
+
+// Ably only, to wait for rewind to happen.
+if (ghostRepo.bufferGhosts) {
+    await ghostRepo.bufferGhosts();
+}
 
 game.onGameEnd((reason: string, data: SaveFile) => {
     console.log("Game ended:", reason, data);
     console.log("Recorded", data, "frames of input");
-    ghostRepository.saveGhost(data);
+    ghostRepo.saveGhost(data);
 });
 
 container.appendChild(game.playfield.canvas);  

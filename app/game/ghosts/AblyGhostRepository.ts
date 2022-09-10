@@ -21,7 +21,13 @@ export class AblyGhostRepository implements IGhostRepository {
         });
     }
 
-    public getGhosts(): SaveFile[] {
+    public async bufferGhosts(timeToWait: number = 1000) {
+        // Glorified thread sleep to let ably rewind happen.
+        await new Promise(resolve => setTimeout(resolve, timeToWait));
+        return this;
+    }
+        
+    public async getGhosts(): Promise<SaveFile[]> {
         return this.ghosts;
     }
 
