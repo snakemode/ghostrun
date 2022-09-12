@@ -48,6 +48,5 @@ export class ImageHelpers {
         context.drawImage(source, 0, 0);
         
         source.src = canvas.toDataURL();
-        return frameElement;
     }
 }
