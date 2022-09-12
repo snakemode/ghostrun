@@ -1,6 +1,6 @@
-import { IDrawable } from "../behaviours/IDrawable";
 import { Game } from "../Game";
 import { EntityBase } from "./EntityBase";
+
 
 export class PhysicsObject extends EntityBase {
     public velocityX: number;
@@ -8,17 +8,19 @@ export class PhysicsObject extends EntityBase {
 
     public gravityDistancePerTick: number;
     public weight: number;
-    public collisionWidth: number;
     
-    constructor(x: number, y: number, width: number, height: number, velX: number = 0, velY: number = 0, collisionWidth: number = width) {
+    constructor(x: number, y: number, width: number, height: number, velX: number = 0, velY: number = 0) {
         super(x, y, width, height);
-        this.collisionWidth = collisionWidth;
 
         this.velocityX = velX;
         this.velocityY = velY;
         this.weight = 12;
 
         this.gravityDistancePerTick = -8.5;
+
+        if (this.velocityX !== 0) {
+            this.facing = this.velocityX > 0 ? "RIGHT" : "LEFT"; 
+        }
     }
 
     public async beforeTick(gameState: Game): Promise<void> {
@@ -33,10 +35,6 @@ export class PhysicsObject extends EntityBase {
         var nextX = this.x + this.velocityX;
         var nextY = this.y + this.velocityY;
         var nextLeadingEdge = this.facing == "LEFT" ? nextX : nextX + this.width;
-
-        if (this.collisionWidth != this.width) {
-            nextLeadingEdge = this.facing == "LEFT" ? nextX : nextX + this.collisionWidth;
-        }
 
         var walkingIntoSurface = gameState.playfield.isSolidSurface(nextLeadingEdge, this.top);
 
@@ -53,13 +51,17 @@ export class PhysicsObject extends EntityBase {
 
         this.x = Math.floor(nextX);
         this.y = Math.floor(nextY);
+
+        if (this.velocityX !== 0) {
+            this.facing = this.velocityX > 0 ? "RIGHT" : "LEFT"; 
+        }
     }
 
     private ensureFloorBoundaries(gameState: Game, nextX: number, nextY: number) {            
         let collides = 
             gameState.playfield.isSolidSurface(nextX, nextY) 
-            || gameState.playfield.isSolidSurface(nextX + (this.collisionWidth / 2), nextY)
-            || gameState.playfield.isSolidSurface(nextX + this.collisionWidth, nextY);
+            || gameState.playfield.isSolidSurface(nextX + (this.width / 2), nextY)
+            || gameState.playfield.isSolidSurface(nextX + this.width, nextY);
 
         if (!collides) {
             return nextY;
@@ -74,8 +76,8 @@ export class PhysicsObject extends EntityBase {
 
             collides = 
                 gameState.playfield.isSolidSurface(nextX, nextY) 
-                || gameState.playfield.isSolidSurface(nextX + (this.collisionWidth / 2), nextY)
-                || gameState.playfield.isSolidSurface(nextX + this.collisionWidth, nextY);
+                || gameState.playfield.isSolidSurface(nextX + (this.width / 2), nextY)
+                || gameState.playfield.isSolidSurface(nextX + this.width, nextY);
                 
             if (bumps >= maxBumps) {
                 break;
@@ -101,7 +103,7 @@ export class PhysicsObject extends EntityBase {
 
     public collidesWith(other: PhysicsObject, aggressive: boolean = false) {
         // check if centres collide
-        if (other.center.x >= this.x && other.center.x <= this.x + this.collisionWidth) {
+        if (other.center.x >= this.x && other.center.x <= this.x + this.width) {
             if (other.center.y <= this.top && other.center.y >= this.bottom) {
                 return true;
             }
@@ -109,8 +111,8 @@ export class PhysicsObject extends EntityBase {
 
         if (aggressive) {
             // check if boxes collide 
-            if (this.x < other.x + other.collisionWidth &&
-                this.x + this.collisionWidth > other.x &&
+            if (this.x < other.x + other.width &&
+                this.x + this.width > other.x &&
                 this.y < other.y + other.height &&
                 this.height + this.y > other.y) {
                 return true;
@@ -121,7 +123,7 @@ export class PhysicsObject extends EntityBase {
     }
 
     public collidingUpwards(gameState: Game) {
-        for (let x = this.x; x < this.x + this.collisionWidth; x++) {
+        for (let x = this.x; x < this.x + this.width; x++) {
             if (gameState.playfield.isSolidSurface(x, this.top + 1)) {
                 return true;
             }
@@ -129,7 +131,7 @@ export class PhysicsObject extends EntityBase {
     }
 
     public standingOnAPlatform(gameState: Game) {
-        for (let x = this.x; x < this.x + this.collisionWidth; x++) {
+        for (let x = this.x; x < this.x + this.width; x++) {
             if (gameState.playfield.isSolidSurface(x, this.bottom - 1)) {
                 return true;
             }
@@ -142,19 +144,8 @@ export class PhysicsObject extends EntityBase {
 
     public get top() { return this.y + this.height; }
     public get bottom() { return this.y; }
-    public get facing() { return this.velocityX >= 0 ? "RIGHT" : "LEFT"; }
-    
-    public get leadingEdge() { 
-        return this.velocityX < 0 ? this.x : this.x + this.width; 
-    }
-    public get trailingEdge() {
-        if (this.collisionWidth != this.width) {
-            return this.facing == "RIGHT" ? this.x : (this.x + this.width) - this.collisionWidth;
-        }
-
-         return this.facing == "RIGHT" ? this.x : this.x + this.width;
-    }
-
+    public get leadingEdge() { return this.velocityX < 0 ? this.x : this.x + this.width; }
+    public get trailingEdge() { return this.velocityX < 0 ? this.x + this.width : this.x; }
     public get isMoving() { return this.velocityX != 0; }
     public get isJumping() { return this.velocityY > 0; }
     public get isFalling() { return this.velocityY < 0; }
@@ -165,7 +156,7 @@ export class PhysicsObject extends EntityBase {
 
     public get center() {
         return {
-            x: this.x + (this.collisionWidth / 2),
+            x: this.x + (this.width / 2),
             y: this.y + (this.height / 2)
         }
     }

@@ -1,9 +1,8 @@
 import { IInitialisable } from "../behaviours/IInitilisable";
 import { ITickable } from "../behaviours/ITickable";
 import { Game } from "../Game";
-import { ImageLoader } from "./ImageLoader";
-
-export type Direction = "left" | "right";
+import { Direction } from "../entities/EntityBase";
+import { ImageHelpers } from "./ImageHelpers";
 
 export class Sprite implements ITickable, IInitialisable {
     private filePattern: string;
@@ -23,7 +22,7 @@ export class Sprite implements ITickable, IInitialisable {
         this.frameCount = frameCount
         this.frames = [];
         this.currentFrameId = 0;
-        this.facing = "right";
+        this.facing = "RIGHT";
         this.delay = delay;
     }
     
@@ -31,8 +30,8 @@ export class Sprite implements ITickable, IInitialisable {
         for (var id = 0; id < this.frameCount; id ++) {
             const pattern = this.filePattern + "." + (id+1) + ".png";
 
-            const cachedResource = await ImageLoader.load(pattern);
-            this.frames[id] = this.cloneImage(cachedResource);
+            const cachedResource = await ImageHelpers.load(pattern);
+            this.frames[id] = ImageHelpers.clone(cachedResource);
         }
 
         console.log("loaded all frames", this.filePattern, this.frames);
@@ -52,16 +51,7 @@ export class Sprite implements ITickable, IInitialisable {
         }
 
         for (const frame of this.frames) {
-            var canvas = document.createElement("canvas");
-            canvas.width = frame.width;
-            canvas.height = frame.height;
-            
-            var context = canvas.getContext("2d");
-            context.translate(frame.width, 0);
-            context.scale(-1, 1);
-            context.drawImage(frame, 0, 0);
-            
-            frame.src = canvas.toDataURL();
+            ImageHelpers.mirror(frame);
         }
 
         this.facing = facing;
@@ -83,18 +73,5 @@ export class Sprite implements ITickable, IInitialisable {
         }        
 
         ctx.drawImage(this.frames[frameId], x, canvasY, width, height);
-    }
-
-    private cloneImage(source: HTMLImageElement) {
-        var canvas = document.createElement("canvas");
-        canvas.width = source.width;
-        canvas.height = source.height;
-        
-        var context = canvas.getContext("2d");
-        context.drawImage(source, 0, 0);
-        
-        const image = new Image();
-        image.src = canvas.toDataURL();
-        return image;
     }
 }

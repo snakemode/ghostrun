@@ -24,12 +24,7 @@ export class Character extends PhysicsObject implements ITickable, IDrawable, II
     public async onTick(gameState: Game) {
         super.onTick(gameState);        
         this.currentSprite.tick(gameState);
-
-        if (this.velocityX < 0) {
-            this.runningSprite.setDirection("left");
-        } else if (this.velocityX > 0) {
-            this.runningSprite.setDirection("right");
-        }
+        this.runningSprite.setDirection(this.facing);
     }
 
     public draw(gameState: Game) {

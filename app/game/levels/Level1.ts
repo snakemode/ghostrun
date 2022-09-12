@@ -1,5 +1,5 @@
 import { Enemy } from "../entities/Enemy";
-import { Level } from "./Level";
+import { activateWhenNearPlayer, Level } from "./Level";
 import { Playfield } from "../entities/Playfield";
 import { Game } from "../Game";
 import { GifAsset } from "../entities/GifAsset";
@@ -19,14 +19,15 @@ export class Level1 extends Level {
         this.addEntity(new GifAsset(2975, 137, "sponge.gif", 15));
         this.addEntity(new GifAsset(3072, 137, "sponge.gif", 15));
 
-        this.addEntity(new Toast(3912, 166));
         this.addEntity(new Enemy(1000, 100));
-        this.addEntity(new Enemy(2000, 600));
+        this.addEntity(new Enemy(2000, 600), activateWhenNearPlayer);
         this.addEntity(new Enemy(3700, 100));
         this.addEntity(new Enemy(4000, 100));
         this.addEntity(new Enemy(5600, 100));
         this.addEntity(new Enemy(6500, 100));
         this.addEntity(new Enemy(7600, 100));
+        
+        this.addEntity(new Toast(3912, 166));
 
         this.addEntity(new GifAsset(7935, 270, "jam.gif"));
 
