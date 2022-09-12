@@ -6,8 +6,14 @@ import { Killable } from "../behaviours/Killable";
 export class Enemy extends Character {
     constructor(x: number, y: number) {
         super(x, y, 68, 39, new Sprite("graphics/enemy", 4, 12));
+ 
+        // Let's not have the mouse tail colliding
+        this.environmentCollisionOffsets = [];
+        for (let x = 34; x < this.width; x++) {
+            this.environmentCollisionOffsets.push({ x: x, y: 0 });
+        }
+        
         this.facing = "LEFT";
-        //this.collisionWidth = 34;
     }
 
     public async onTick(gameState: Game) {

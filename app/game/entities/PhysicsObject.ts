@@ -23,12 +23,10 @@ export class PhysicsObject extends EntityBase {
         if (this.velocityX !== 0) {
             this.facing = this.velocityX > 0 ? "RIGHT" : "LEFT"; 
         }
-
-        this.environmentCollisionOffsets = [
-            { x: 0, y: 0 },
-            { x: this.width / 2, y: 0 },
-            { x: this.width, y: 0 },
-        ];
+        
+        for (let x = 0; x < this.width; x++) {
+            this.environmentCollisionOffsets.push({ x: x, y: 0 });
+        }
 
         this.entityCollisionOffsets = [{ 
             x: this.width / 2,
@@ -47,9 +45,9 @@ export class PhysicsObject extends EntityBase {
     public async applyMovement(gameState: Game) {
         var nextX = this.x + this.velocityX;
         var nextY = this.y + this.velocityY;
-        const collisionBounds = this.collisionBoundsFor(nextX, nextY);
+        const leadingEdge = this.facing == "RIGHT" ? nextX + this.width : nextX;
         
-        var walkingIntoSurface = gameState.playfield.isSolidSurface(collisionBounds.leadingX, this.top);
+        var walkingIntoSurface = gameState.playfield.isSolidSurface(leadingEdge, this.top);
 
         if (this.isMoving && walkingIntoSurface) {
             nextX = this.x;
@@ -90,7 +88,7 @@ export class PhysicsObject extends EntityBase {
         return nextY;
     }
 
-    private applyGravity(gameState: Game) {            
+    private applyGravity(gameState: Game) {
         if (this.isJumping) {
             const resistencePerTick = this.weight / 60;
             this.velocityY += this.gravityDistancePerTick * resistencePerTick;
@@ -133,8 +131,9 @@ export class PhysicsObject extends EntityBase {
     }
 
     public standingOnAPlatform(gameState: Game) {
-        for (let x = this.x; x < this.x + this.width; x++) {
-            if (gameState.playfield.isSolidSurface(x, this.bottom - 1)) {
+        const points = this.environmentCollisionPoints();
+        for (const point of points) {
+            if (gameState.playfield.isSolidSurface(point.x, point.y - 1)) {
                 return true;
             }
         }
@@ -174,67 +173,22 @@ export class PhysicsObject extends EntityBase {
             y: this.y + (this.height / 2)
         }
     }
-
-    public get collisionCenter() {
-        return this.collisionBoundsFor().center;
-    }
-
-    public collisionBoundsFor(xPosition = this.x, yPosition = this.y) {
-        let leadingX: number;
-        let trailingX: number;
-        let left: number;
-        let right: number;
-        
-        let center: {x: number, y: number} =  {
-            x: xPosition + this.width - (this.width / 2), 
-            y: yPosition + (this.height / 2)
-        }
-
-        if (this.facing == "RIGHT") {
-            left = xPosition + this.width  - this.width;
-            right = xPosition + this.width;
-            leadingX = right;
-            trailingX = left;
-            center = {
-                x: xPosition + this.width - (this.width / 2), 
-                y: yPosition + (this.height / 2)
-            };
-        } else {
-            left = xPosition;
-            right = xPosition + this.width;            
-            leadingX = left;
-            trailingX = right;
-            center = this.coordinatesAdjustedForFacing(center.x, center.y);
-        }
-
-        return {
-            left: left,
-            right: right,
-            top: yPosition + this.height,
-            bottom: yPosition,
-
-            leadingX: leadingX,
-            trailingX: trailingX,
-            center: center,
-            facing: this.facing,
-        }
-    }
-
-    private coordinatesAdjustedForFacing(x: number, y: number) {
-        if (this.facing == "LEFT") {
-            x = x - this.width;
-        }
-
-        return {x: x, y: y};
-    }
     
     private collidesFrom(x: number, y: number, gameState: Game) {
         const points = this.environmentCollisionPoints(x, y);
         return points.some(point => (gameState.playfield.isSolidSurface(point.x, point.y)));
     }
 
-    public environmentCollisionPoints(x = this.x, y = this.y) {
-        return this.environmentCollisionOffsets.map(offset => ({
+    public environmentCollisionPoints(x = this.x, y = this.y) {        
+        return this.collisionPointsFor(this.environmentCollisionOffsets, x, y);
+    }
+
+    public entityCollisionPoints(x = this.x, y = this.y) {
+        return this.collisionPointsFor(this.entityCollisionOffsets, x, y);
+    }
+
+    private collisionPointsFor(pointsSource: {x: number, y: number }[], x: number, y: number) {        
+        return pointsSource.map(offset => ({
             x: this.facing == "RIGHT" ? x + offset.x : x + this.width - offset.x,
             y: y + offset.y
         }));

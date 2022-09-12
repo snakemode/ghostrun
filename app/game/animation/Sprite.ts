@@ -81,7 +81,12 @@ export class Sprite implements ITickable, IInitialisable {
             if (entity as PhysicsObject) {
                 const physicsObject = entity as PhysicsObject;
 
-                for (const point of physicsObject.environmentCollisionPoints()) {
+                const collisionPoints = [
+                    ...physicsObject.environmentCollisionPoints(),
+                    ...physicsObject.entityCollisionPoints()
+                ]
+
+                for (const point of collisionPoints) {
                     const { x, y } = playfield.camera.toCanvasPosition(point.x, point.y);
 
                     ctx.beginPath();

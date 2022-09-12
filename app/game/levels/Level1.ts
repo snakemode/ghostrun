@@ -38,8 +38,8 @@ export class Level1 extends Level {
     }
 
     public async onStart(gameState: Game, level: Playfield) {
-        //gameState.player.teleport(2850, 0);
-        //gameState.playfield.cameraXposition = 2950;
+        //gameState.player.teleport(3050, 600);
+        //gameState.playfield.camera.move(2850);
     }
     
     public async onTick(gameState: Game) {
