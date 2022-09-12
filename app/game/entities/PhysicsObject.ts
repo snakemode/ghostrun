@@ -103,9 +103,12 @@ export class PhysicsObject extends EntityBase {
     }
 
     public collidesWith(other: PhysicsObject, aggressive: boolean = false) {
-        if (this.center.x >= other.x && this.center.x <= other.x + other.width) {
-            if (this.center.y <= other.top && this.center.y >= other.bottom) {
-                return true;
+
+        for (const point of this.entityCollisionPoints()) {
+            if (point.x >= other.x && point.x <= other.x + other.width) {
+                if (point.y <= other.top && point.y >= other.bottom) {
+                    return true;
+                }
             }
         }
 

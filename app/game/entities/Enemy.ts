@@ -12,6 +12,8 @@ export class Enemy extends Character {
         for (let x = 34; x < this.width; x++) {
             this.environmentCollisionOffsets.push({ x: x, y: 0 });
         }
+
+        this.entityCollisionOffsets.push({ x: 60, y: 20 });
         
         this.facing = "LEFT";
     }
