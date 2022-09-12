@@ -14,7 +14,7 @@ export class Enemy extends Character {
         
         this.velocityX = 2;
 
-        if (gameState.player.center.x < this.center.x + this.width * 2) {
+        if (gameState.player.center.x < this.center.x) {
             this.velocityX *= -1;
         }
 
