@@ -1,7 +1,7 @@
 import { IInitialisable } from "../behaviours/IInitilisable";
 import { ITickable } from "../behaviours/ITickable";
 import { Game } from "../Game";
-import { Direction } from "../entities/EntityBase";
+import { Direction, EntityBase } from "../entities/EntityBase";
 import { ImageHelpers } from "./ImageHelpers";
 import { Playfield } from "../entities/Playfield";
 
@@ -61,24 +61,30 @@ export class Sprite implements ITickable, IInitialisable {
     }
 
 
-    public draw(playfield: Playfield, x: number, y: number, height: number, width: number, frameId: ValidFrameId = "auto", isDebug = false) {
-        const ctx = playfield.ctx;        
-       
+    public draw(playfield: Playfield, entity: EntityBase, frameId: ValidFrameId = "auto", isDebug = false) {   
+        const ctx = playfield.ctx;       
         let targetFrameId = frameId == "auto" ? this.currentFrameId : frameId;
         targetFrameId = frameId == "stopped" ? 0 : targetFrameId;
 
         const targetFrame = this.frames[targetFrameId];
         
-        const canvasY = playfield.height - y - height;
+        const canvasY = playfield.height - entity.y - entity.height;        
+        var canvasX = entity.x - playfield.cameraXposition;
+        canvasX = canvasX > entity.x ? entity.x : canvasX;
+
+        if (playfield.atLevelEnd()) {
+            canvasX = (playfield.width - (playfield.map.width - playfield.cameraXposition - (entity.x - playfield.cameraXposition)));
+        }
 
         if (isDebug) {
             ctx.beginPath();
             ctx.lineWidth = 1;
             ctx.strokeStyle = "red";
-            ctx.rect(x, canvasY, width, height);
+            ctx.rect(canvasX, canvasY, entity.width, entity.height);
             ctx.stroke();
+            return;
         }
-
-        ctx.drawImage(targetFrame, x, canvasY, width, height);
+            
+        ctx.drawImage(targetFrame, canvasX, canvasY, entity.width, entity.height); 
     }
 }

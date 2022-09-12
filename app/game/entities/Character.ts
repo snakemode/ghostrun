@@ -2,7 +2,7 @@ import { Game } from "../Game";
 import { ITickable } from "../behaviours/ITickable";
 import { Killable } from "../behaviours/Killable";
 import { PhysicsObject } from "./PhysicsObject";
-import { Sprite } from "../animation/Sprite";
+import { Sprite, ValidFrameId } from "../animation/Sprite";
 import { IDrawable } from "../behaviours/IDrawable";
 import { IInitialisable } from "../behaviours/IInitilisable";
 
@@ -32,14 +32,7 @@ export class Character extends PhysicsObject implements ITickable, IDrawable, II
             return; 
         }
 
-        var screenX = this.x - playfield.cameraXposition;
-        screenX = screenX > this.x ? this.x : screenX;
-
-        if (playfield.atLevelEnd()) {
-            screenX = (playfield.width - (playfield.map.width - playfield.cameraXposition - (this.x - playfield.cameraXposition)));
-        }
-
-        let frameId;
+        let frameId: ValidFrameId;
         if (this.isJumping || this.isFalling) {      
             frameId = 3;
         } else if (this.isMoving) {
@@ -48,7 +41,7 @@ export class Character extends PhysicsObject implements ITickable, IDrawable, II
             frameId = "stopped";
         }
 
-        this.currentSprite.draw(playfield, screenX, this.y, this.height, this.width, frameId, debug);
+        this.currentSprite.draw(playfield, this, frameId, debug);
     }
 
     public get isAlive() {

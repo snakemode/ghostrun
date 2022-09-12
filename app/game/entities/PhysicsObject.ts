@@ -10,10 +10,12 @@ export class PhysicsObject extends EntityBase {
     public weight: number;
 
     public collisionWidth: number;
+    public collisionOffset: number;
     
     constructor(x: number, y: number, width: number, height: number, velX: number = 0, velY: number = 0) {
         super(x, y, width, height);
         this.collisionWidth = width;
+        this.collisionOffset = 0;
 
         this.velocityX = velX;
         this.velocityY = velY;
@@ -37,9 +39,9 @@ export class PhysicsObject extends EntityBase {
     public async applyMovement(gameState: Game) {
         var nextX = this.x + this.velocityX;
         var nextY = this.y + this.velocityY;
-        var nextLeadingEdge = this.facing == "LEFT" ? nextX : nextX + this.collisionWidth;
-
-        var walkingIntoSurface = gameState.playfield.isSolidSurface(nextLeadingEdge, this.top);
+        const collisionBounds = this.collisionBoundsFor(nextX, nextY);
+        
+        var walkingIntoSurface = gameState.playfield.isSolidSurface(collisionBounds.leadingX, this.top);
 
         if (this.isMoving && walkingIntoSurface) {
             nextX = this.x;
@@ -105,9 +107,8 @@ export class PhysicsObject extends EntityBase {
     }
 
     public collidesWith(other: PhysicsObject, aggressive: boolean = false) {
-        // check if centres collide
-        if (other.center.x >= this.x && other.center.x <= this.x + this.collisionWidth) {
-            if (other.center.y <= this.top && other.center.y >= this.bottom) {
+        if (this.center.x >= other.x && this.center.x <= other.x + other.collisionWidth) {
+            if (this.center.y <= other.top && this.center.y >= other.bottom) {
                 return true;
             }
         }
@@ -156,15 +157,69 @@ export class PhysicsObject extends EntityBase {
     public get jumpingOrFalling() { return this.isJumping ? "JUMPING" : "FALLING"; }
     
     public get leadingEdge() {
-        return this.facing == "LEFT" ? this.x : this.x + this.collisionWidth;
+        if (this.facing == "LEFT") {
+            return this.x;
+        }
+
+        return this.x + this.collisionWidth;
     }
 
-    public get trailingEdge() { return this.velocityX < 0 ? this.x + this.collisionWidth : this.x; }
+    public get trailingEdge() {
+        if (this.facing == "RIGHT") {
+            return this.x;
+        }
+
+        return this.x + this.collisionWidth;
+    }
 
     public get center() {
         return {
             x: this.x + (this.collisionWidth / 2),
             y: this.y + (this.height / 2)
+        }
+    }
+
+    public get collisionCenter() {
+        return this.collisionBoundsFor().center;
+    }
+
+    public collisionBoundsFor(xPosition = this.x, yPosition = this.y) {
+        let leadingX: number;
+        let trailingX: number;
+        let left: number;
+        let right: number;
+        let center: {x: number, y: number};
+
+        if (this.facing == "RIGHT") {
+            left = xPosition + this.width - this.collisionOffset - this.collisionWidth;
+            right = xPosition + this.width - this.collisionOffset;
+            leadingX = right;
+            trailingX = left;
+            center = { 
+                x: xPosition + this.width - this.collisionOffset - (this.collisionWidth / 2), 
+                y: yPosition + (this.height / 2)
+            };
+        } else {
+            left = xPosition + this.collisionOffset;
+            right = xPosition + this.collisionOffset + this.collisionWidth;            
+            leadingX = left;
+            trailingX = right;
+            center = {
+                x: xPosition + this.collisionOffset + (this.collisionWidth / 2),
+                y: yPosition + (this.height / 2)
+            };
+        }
+
+        return {
+            left: left,
+            right: right,
+            top: yPosition + this.height,
+            bottom: yPosition,
+
+            leadingX: leadingX,
+            trailingX: trailingX,
+            center: center,
+            facing: this.facing,
         }
     }
 
