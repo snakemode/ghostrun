@@ -6,6 +6,7 @@ import { Killable } from "../behaviours/Killable";
 export class Enemy extends Character {
     constructor(x: number, y: number) {
         super(x, y, 68, 39, new Sprite("graphics/enemy", 4, 12));
+        this.facing = "LEFT";
         //this.collisionWidth = 28;
     }
 

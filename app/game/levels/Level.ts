@@ -3,6 +3,7 @@ import { IDrawable, isDrawable } from "../behaviours/IDrawable";
 import { isTickable, ITickable } from "../behaviours/ITickable";
 import { Playfield } from "../entities/Playfield";
 import { isInitialisable } from "../behaviours/IInitilisable";
+import { EntityBase } from "../entities/EntityBase";
 
 export abstract class Level {
     public foregroundUrl: string;
@@ -29,7 +30,7 @@ export abstract class Level {
         }
     }
 
-    protected addEntity(entity: GamePlayEntity, activationCondition: EntityActivationCallback = activateWhenNearPlayer) {
+    protected addEntity(entity: GamePlayEntity, activationCondition: EntityActivationCallback = activateWhenOnScreen) {
         const entityRegistration = {
             entity: entity,
             activationCondition: activationCondition
@@ -56,12 +57,20 @@ export type EntityRegistration = {
     activationCondition: EntityActivationCallback;
 };
 
-export function alwaysActivate(gameState: Game, entity: GamePlayEntity) {
+export function alwaysActivate(gameState: Game, entity: EntityBase) {
     return true;
 }
 
-export function activateWhenNearPlayer(gameState: Game, entity: GamePlayEntity): boolean {
+export function activateWhenOnScreen(gameState: Game, entity: EntityBase): boolean {
     return isDrawable(entity) 
             ? entity.x < gameState.playfield.cameraXposition + gameState.playfield.width 
+            : alwaysActivate(gameState, entity);
+}
+
+export function activateWhenNearPlayer(gameState: Game, entity: EntityBase): boolean {
+    const distanceFromPlayer = Math.abs(gameState.player.x - entity.x);
+
+    return isDrawable(entity) 
+            ? distanceFromPlayer <= 500
             : alwaysActivate(gameState, entity);
 }
