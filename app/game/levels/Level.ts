@@ -67,10 +67,15 @@ export function activateWhenOnScreen(gameState: Game, entity: EntityBase): boole
             : alwaysActivate(gameState, entity);
 }
 
-export function activateWhenNearPlayer(gameState: Game, entity: EntityBase): boolean {
-    const distanceFromPlayer = Math.abs(gameState.player.x - entity.x);
+export const activateWhenNearPlayer = (activateWhenDistanceFromPlayerIs(800));
 
-    return isDrawable(entity) 
-            ? distanceFromPlayer <= 500
-            : alwaysActivate(gameState, entity);
+export function activateWhenDistanceFromPlayerIs(distance: number) {
+    return (gameState: Game, entity: EntityBase) => {
+
+        const distanceFromPlayer = Math.abs(gameState.player.x - entity.x);
+
+        return isDrawable(entity) 
+                ? distanceFromPlayer <= distance
+                : alwaysActivate(gameState, entity);
+    }
 }
