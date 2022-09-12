@@ -41,7 +41,7 @@ export class Sprite implements ITickable, IInitialisable {
         console.log("loaded all frames", this.filePattern, this.frames);
     }
     
-    public async tick(gameState: Game){        
+    public async tick(gameState: Game) {
         if (gameState.playfield.tickCount % this.delay == 0) {
             this.currentFrameId++;
         }
@@ -60,7 +60,6 @@ export class Sprite implements ITickable, IInitialisable {
 
         this.facing = facing;
     }
-
 
     public draw(playfield: Playfield, entity: EntityBase, frameId: ValidFrameId = "auto", isDebug = false) {   
         const ctx = playfield.ctx;

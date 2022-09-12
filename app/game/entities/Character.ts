@@ -8,27 +8,26 @@ import { IInitialisable } from "../behaviours/IInitilisable";
 
 export class Character extends PhysicsObject implements ITickable, IDrawable, IInitialisable {
 
-    private runningSprite: Sprite;
-    private get currentSprite() { return this.runningSprite; }
+    protected sprite: Sprite;
 
-    constructor(x: number, y: number, width: number, height: number, runningSprite: Sprite) {
+    constructor(x: number, y: number, width: number, height: number, sprite: Sprite) {
         super(x, y, width, height);
         this.addBehaviour(Killable.name, new Killable(this));
-        this.runningSprite = runningSprite;
+        this.sprite = sprite;
     }
 
     public async init() {
-        await this.runningSprite.init();
+        await this.sprite.init();
     }
 
     public async onTick(gameState: Game) {
         super.onTick(gameState);        
-        this.currentSprite.tick(gameState);
-        this.runningSprite.setDirection(this.facing);
+        this.sprite.tick(gameState);
+        this.sprite.setDirection(this.facing);
     }
 
     public draw({ playfield, debug }: Game) {
-        if (!this.isAlive || !this.runningSprite) { 
+        if (!this.isAlive || !this.sprite) { 
             return; 
         }
 
@@ -41,7 +40,7 @@ export class Character extends PhysicsObject implements ITickable, IDrawable, II
             frameId = "stopped";
         }
 
-        this.currentSprite.draw(playfield, this, frameId, debug);
+        this.sprite.draw(playfield, this, frameId, debug);
     }
 
     public get isAlive() {

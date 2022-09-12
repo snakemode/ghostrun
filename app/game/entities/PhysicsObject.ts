@@ -141,6 +141,18 @@ export class PhysicsObject extends EntityBase {
             }
         }
     }
+    
+    protected aboutToFall(gameState: Game) {
+        const nextX = this.x + this.velocityX;
+        const nextY = this.y + this.velocityY;         
+        const points = this.environmentCollisionPoints(nextX, nextY);
+
+        for (const point of points) {
+            if (!gameState.playfield.isSolidSurface(point.x, point.y - 1)) {
+                return true;
+            }
+        }
+    }
 
     public draw(gameState: Game): void {
         throw new Error("Method not implemented - should be implemented by derived class.");
