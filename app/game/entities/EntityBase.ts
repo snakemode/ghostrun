@@ -3,6 +3,8 @@ import { IBehaviour } from "../behaviours/IBehaviour";
 import { ITickable } from "../behaviours/ITickable";
 import { IDrawable } from "../behaviours/IDrawable";
 
+export type Direction = "LEFT" | "RIGHT";
+
 export abstract class EntityBase implements ITickable, IDrawable {
     public id: string;
     public x: number;
@@ -11,7 +13,7 @@ export abstract class EntityBase implements ITickable, IDrawable {
     public width: number;
     public zIndex: number;
 
-    public facing: string;
+    public facing: Direction;
 
     private behaviours: Map<string, IBehaviour>;
 

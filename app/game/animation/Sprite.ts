@@ -1,9 +1,8 @@
 import { IInitialisable } from "../behaviours/IInitilisable";
 import { ITickable } from "../behaviours/ITickable";
 import { Game } from "../Game";
+import { Direction } from "../entities/EntityBase";
 import { ImageLoader } from "./ImageLoader";
-
-export type Direction = "left" | "right";
 
 export class Sprite implements ITickable, IInitialisable {
     private filePattern: string;
@@ -23,7 +22,7 @@ export class Sprite implements ITickable, IInitialisable {
         this.frameCount = frameCount
         this.frames = [];
         this.currentFrameId = 0;
-        this.facing = "right";
+        this.facing = "RIGHT";
         this.delay = delay;
     }
     

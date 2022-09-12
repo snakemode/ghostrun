@@ -1,6 +1,7 @@
 import { Game } from "../Game";
 import { EntityBase } from "./EntityBase";
 
+
 export class PhysicsObject extends EntityBase {
     public velocityX: number;
     public velocityY: number;
@@ -51,7 +52,6 @@ export class PhysicsObject extends EntityBase {
         this.x = Math.floor(nextX);
         this.y = Math.floor(nextY);
 
-        const lastFacing = this.facing;
         if (this.velocityX !== 0) {
             this.facing = this.velocityX > 0 ? "RIGHT" : "LEFT"; 
         }
