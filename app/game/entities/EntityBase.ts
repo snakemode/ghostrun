@@ -11,6 +11,8 @@ export abstract class EntityBase implements ITickable, IDrawable {
     public width: number;
     public zIndex: number;
 
+    public facing: string;
+
     private behaviours: Map<string, IBehaviour>;
 
     constructor(x: number, y: number, width: number, height: number) {
@@ -20,6 +22,8 @@ export abstract class EntityBase implements ITickable, IDrawable {
         this.height = height;
         this.width = width;
         this.zIndex = 0;
+
+        this.facing = "RIGHT";
 
         this.behaviours = new Map<string, IBehaviour>();
     }
