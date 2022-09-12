@@ -1,4 +1,4 @@
-import { ImageLoader } from "../animation/ImageLoader";
+import { ImageHelpers } from "../animation/ImageHelpers";
 import { IDrawable } from "../behaviours/IDrawable";
 import { IInitialisable } from "../behaviours/IInitilisable";
 import { Game } from "../Game";
@@ -17,7 +17,7 @@ export class ImageAsset extends EntityBase implements IDrawable, IInitialisable 
     }
 
     public async init() {
-        this.texture = await ImageLoader.load("/" + this.filename);
+        this.texture = await ImageHelpers.load("/" + this.filename);
         this.width = this.width == -1 ? this.texture.width : this.width;
         this.height = this.height == -1 ? this.texture.height : this.height;
     }

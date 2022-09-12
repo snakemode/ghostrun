@@ -4,7 +4,7 @@ import { PhysicsObject } from "./PhysicsObject";
 import { IDrawable } from "../behaviours/IDrawable";
 import { IInitialisable } from "../behaviours/IInitilisable";
 import { Killable } from "../behaviours/Killable";
-import { ImageLoader } from "../animation/ImageLoader";
+import { ImageHelpers } from "../animation/ImageHelpers";
 
 export class Toast extends PhysicsObject implements ITickable, IDrawable, IInitialisable {
     private texture: HTMLImageElement;
@@ -23,8 +23,8 @@ export class Toast extends PhysicsObject implements ITickable, IDrawable, IIniti
     }
 
     public async init(): Promise<void> {
-        this.texture = await ImageLoader.load("/toast.1.png");
-        this.toasterFront = await ImageLoader.load("/toast.resting.png");
+        this.texture = await ImageHelpers.load("/toast.1.png");
+        this.toasterFront = await ImageHelpers.load("/toast.resting.png");
 
         if (this.width === -1) {
             this.width = this.texture.width;

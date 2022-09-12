@@ -2,7 +2,7 @@ import { IInitialisable } from "../behaviours/IInitilisable";
 import { ITickable } from "../behaviours/ITickable";
 import { Game } from "../Game";
 import { Direction } from "../entities/EntityBase";
-import { ImageLoader } from "./ImageLoader";
+import { ImageHelpers } from "./ImageHelpers";
 
 export class Sprite implements ITickable, IInitialisable {
     private filePattern: string;
@@ -30,7 +30,7 @@ export class Sprite implements ITickable, IInitialisable {
         for (var id = 0; id < this.frameCount; id ++) {
             const pattern = this.filePattern + "." + (id+1) + ".png";
 
-            const cachedResource = await ImageLoader.load(pattern);
+            const cachedResource = await ImageHelpers.load(pattern);
             this.frames[id] = this.cloneImage(cachedResource);
         }
 
