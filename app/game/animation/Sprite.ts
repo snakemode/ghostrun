@@ -4,6 +4,7 @@ import { Game } from "../Game";
 import { Direction, EntityBase } from "../entities/EntityBase";
 import { ImageHelpers } from "./ImageHelpers";
 import { Playfield } from "../entities/Playfield";
+import { PhysicsObject } from "../entities/PhysicsObject";
 
 export type ValidFrameId = number | "auto" | "stopped";
 
@@ -62,29 +63,38 @@ export class Sprite implements ITickable, IInitialisable {
 
 
     public draw(playfield: Playfield, entity: EntityBase, frameId: ValidFrameId = "auto", isDebug = false) {   
-        const ctx = playfield.ctx;       
+        const ctx = playfield.ctx;
+        
         let targetFrameId = frameId == "auto" ? this.currentFrameId : frameId;
         targetFrameId = frameId == "stopped" ? 0 : targetFrameId;
-
         const targetFrame = this.frames[targetFrameId];
         
-        const canvasY = playfield.height - entity.y - entity.height;        
-        var canvasX = entity.x - playfield.cameraXposition;
-        canvasX = canvasX > entity.x ? entity.x : canvasX;
-
-        if (playfield.atLevelEnd()) {
-            canvasX = (playfield.width - (playfield.map.width - playfield.cameraXposition - (entity.x - playfield.cameraXposition)));
-        }
+        const { x, y } = playfield.camera.toCanvasPosition(entity.x, entity.y, entity);
 
         if (isDebug) {
             ctx.beginPath();
             ctx.lineWidth = 1;
-            ctx.strokeStyle = "red";
-            ctx.rect(canvasX, canvasY, entity.width, entity.height);
+            ctx.strokeStyle = "green";
+            ctx.rect(x, y, entity.width, entity.height);
             ctx.stroke();
+
+            if (entity as PhysicsObject) {
+                const physicsObject = entity as PhysicsObject;
+
+                for (const point of physicsObject.environmentCollisionPoints()) {
+                    const { x, y } = playfield.camera.toCanvasPosition(point.x, point.y);
+
+                    ctx.beginPath();
+                    ctx.lineWidth = 1;
+                    ctx.strokeStyle = "red";
+                    ctx.rect(x, y, 1, 1);
+                    ctx.stroke();
+                }
+            }
+
             return;
         }
             
-        ctx.drawImage(targetFrame, canvasX, canvasY, entity.width, entity.height); 
+        ctx.drawImage(targetFrame, x, y, entity.width, entity.height); 
     }
 }

@@ -82,30 +82,31 @@ describe("PhysicsObject", () => {
         expect(physicsObject.bottom).toBe(48);
     }, 33);
 
-    it("returns correct collision bounds facing right", () => {
-        const physicsObject = new PhysicsObject(0, 0, 100, 100);
-        physicsObject.collisionOffset = 2;
-        physicsObject.collisionWidth = 10
+    // it("returns correct collision bounds facing right", () => {
+    //     const physicsObject = new PhysicsObject(0, 0, 100, 100);
+    //     //physicsObject.collisionOffset = 2;
+    //     //physicsObject.collisionWidth = 10
         
-        const bounds = physicsObject.collisionBoundsFor();
+    //     const bounds = physicsObject.collisionBoundsFor();
 
-        expect(bounds.leadingX).toBe(98);
-        expect(bounds.trailingX).toBe(88);
-        expect(bounds.top).toBe(100);
-        expect(bounds.bottom).toBe(0);
-    });
+    //     expect(bounds.leadingX).toBe(98);
+    //     expect(bounds.trailingX).toBe(88);
+    //     expect(bounds.top).toBe(100);
+    //     expect(bounds.bottom).toBe(0);
+    // });
 
-    it("returns correct collision bounds facing left", () => {
-        const physicsObject = new PhysicsObject(0, 0, 100, 100);
-        physicsObject.facing = "LEFT";
-        physicsObject.collisionOffset = 0;
-        physicsObject.collisionWidth = 10
+    // it("returns correct collision bounds facing left", () => {
+    //     const physicsObject = new PhysicsObject(0, 0, 100, 100);
+    //     physicsObject.facing = "LEFT";
+    //     //physicsObject.collisionOffset = 0;
+    //     //physicsObject.collisionWidth = 10
         
-        const bounds = physicsObject.collisionBoundsFor();
+    //     const bounds = physicsObject.collisionBoundsFor();
 
-        expect(bounds.leadingX).toBe(0);
-        expect(bounds.trailingX).toBe(10);
-        expect(bounds.top).toBe(100);
-        expect(bounds.bottom).toBe(0);
-    });
+    //     expect(bounds.leadingX).toBe(0);
+    //     expect(bounds.trailingX).toBe(10);
+    //     expect(bounds.top).toBe(100);
+    //     expect(bounds.bottom).toBe(0);
+    // });
+    
 });
