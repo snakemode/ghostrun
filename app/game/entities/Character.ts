@@ -27,25 +27,28 @@ export class Character extends PhysicsObject implements ITickable, IDrawable, II
         this.runningSprite.setDirection(this.facing);
     }
 
-    public draw(gameState: Game) {
+    public draw({ playfield, debug }: Game) {
         if (!this.isAlive || !this.runningSprite) { 
             return; 
         }
 
-        var screenX = this.x - gameState.playfield.cameraXposition;
+        var screenX = this.x - playfield.cameraXposition;
         screenX = screenX > this.x ? this.x : screenX;
 
-        if (gameState.playfield.atLevelEnd()) {
-            screenX = (gameState.playfield.width - (gameState.playfield.map.width - gameState.playfield.cameraXposition - (this.x - gameState.playfield.cameraXposition)));
+        if (playfield.atLevelEnd()) {
+            screenX = (playfield.width - (playfield.map.width - playfield.cameraXposition - (this.x - playfield.cameraXposition)));
         }
 
+        let frameId;
         if (this.isJumping || this.isFalling) {      
-            this.currentSprite.drawFrameNumber(gameState, 3, screenX, this.y, this.height, this.width, gameState.playfield.ctx);
+            frameId = 3;
         } else if (this.isMoving) {
-            this.currentSprite.draw(gameState, screenX, this.y, this.height, this.width, gameState.playfield.ctx);
+            frameId = "auto";
         } else {
-            this.currentSprite.drawFrameNumber(gameState, 0, screenX, this.y, this.height, this.width, gameState.playfield.ctx);
+            frameId = "stopped";
         }
+
+        this.currentSprite.draw(playfield, screenX, this.y, this.height, this.width, frameId, debug);
     }
 
     public get isAlive() {

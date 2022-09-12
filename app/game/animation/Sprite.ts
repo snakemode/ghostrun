@@ -3,6 +3,9 @@ import { ITickable } from "../behaviours/ITickable";
 import { Game } from "../Game";
 import { Direction } from "../entities/EntityBase";
 import { ImageHelpers } from "./ImageHelpers";
+import { Playfield } from "../entities/Playfield";
+
+export type ValidFrameId = number | "auto" | "stopped";
 
 export class Sprite implements ITickable, IInitialisable {
     private filePattern: string;
@@ -57,21 +60,25 @@ export class Sprite implements ITickable, IInitialisable {
         this.facing = facing;
     }
 
-    public draw(gameState, x, y, height, width, ctx) {
-        this.drawFrameNumber(gameState, this.currentFrameId, x, y, height, width, ctx);
-    }
 
-    public drawFrameNumber(gameState, frameId, x, y, height, width, ctx) {
-        const canvasY = gameState.playfield.height - y - height;
+    public draw(playfield: Playfield, x: number, y: number, height: number, width: number, frameId: ValidFrameId = "auto", isDebug = false) {
+        const ctx = playfield.ctx;        
+       
+        let targetFrameId = frameId == "auto" ? this.currentFrameId : frameId;
+        targetFrameId = frameId == "stopped" ? 0 : targetFrameId;
 
-        if (gameState.debug) {
+        const targetFrame = this.frames[targetFrameId];
+        
+        const canvasY = playfield.height - y - height;
+
+        if (isDebug) {
             ctx.beginPath();
-            ctx.lineWidth = "1";
+            ctx.lineWidth = 1;
             ctx.strokeStyle = "red";
             ctx.rect(x, canvasY, width, height);
             ctx.stroke();
-        }        
+        }
 
-        ctx.drawImage(this.frames[frameId], x, canvasY, width, height);
+        ctx.drawImage(targetFrame, x, canvasY, width, height);
     }
 }
