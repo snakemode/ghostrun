@@ -2,7 +2,8 @@ import { SaveFile } from "./game/SaveFile";
 import { AblyGhostRepository } from "./game/ghosts/AblyGhostRepository";
 import { Game } from "./game/Game";
 import { LocalStorageGhostRepository } from "./game/ghosts/LocalStorageGhostRepository";
-    
+
+(async () => {
 const debugCheckbox = document.getElementById("debug") as HTMLInputElement;
 const container = document.getElementById("container") as HTMLDivElement;
 
@@ -34,4 +35,5 @@ debugCheckbox.addEventListener("change", (value: any) => {
     //game.start();
 });
 
+})();
 export { };
